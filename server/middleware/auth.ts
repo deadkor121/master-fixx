@@ -12,14 +12,15 @@ export interface AuthRequest extends Request {
 }
 
 export function generateToken(user: { id: number; email: string; userType: string }) {
-  return jwt.sign(user, JWT_SECRET, { expiresIn: "24h" });
+  return jwt.sign(user, JWT_SECRET, { expiresIn: "7d" });
 }
 
 export function verifyToken(req: AuthRequest, res: Response, next: NextFunction) {
-  const token = req.headers.authorization?.replace("Bearer ", "");
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
-    return res.status(401).json({ message: "Токен не надано" });
+    return res.status(401).json({ message: "Токен доступу відсутній" });
   }
 
   try {
@@ -27,21 +28,24 @@ export function verifyToken(req: AuthRequest, res: Response, next: NextFunction)
     req.user = decoded;
     next();
   } catch (error) {
-    return res.status(401).json({ message: "Недійсний токен" });
+    return res.status(403).json({ message: "Невірний токен доступу" });
   }
 }
 
 export function optionalAuth(req: AuthRequest, res: Response, next: NextFunction) {
-  const token = req.headers.authorization?.replace("Bearer ", "");
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(" ")[1];
 
-  if (token) {
-    try {
-      const decoded = jwt.verify(token, JWT_SECRET) as any;
-      req.user = decoded;
-    } catch (error) {
-      // Continue without auth if token is invalid
-    }
+  if (!token) {
+    return next();
   }
-  
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    req.user = decoded;
+  } catch (error) {
+    // Ignore invalid tokens for optional auth
+  }
+
   next();
 }

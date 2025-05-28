@@ -169,13 +169,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Bookings
-  app.post("/api/bookings", async (req, res) => {
+  app.post("/api/bookings", verifyToken, async (req: AuthRequest, res, next) => {
     try {
       const bookingData = insertBookingSchema.parse(req.body);
-      const booking = await storage.createBooking(bookingData);
+      
+      // Add client ID from authenticated user
+      const bookingWithClient = {
+        ...bookingData,
+        clientId: req.user!.id
+      };
+      
+      const booking = await storage.createBooking(bookingWithClient);
       res.json(booking);
     } catch (error) {
-      res.status(400).json({ message: "Помилка створення замовлення" });
+      next(error);
     }
   });
 

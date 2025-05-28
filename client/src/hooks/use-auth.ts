@@ -25,8 +25,10 @@ export function useAuthProvider(): AuthContextType {
         email,
         password,
       });
-      const { user } = await response.json();
+      const { user, token } = await response.json();
       setUser(user);
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", token);
       toast({
         title: "Успішний вхід",
         description: `Ласкаво просимо, ${user.firstName}!`,
@@ -52,7 +54,9 @@ export function useAuthProvider(): AuthContextType {
 
       const { confirmPassword, ...registerData } = data;
       const response = await apiRequest("POST", "/api/auth/register", registerData);
-      const { user } = await response.json();
+      const { user, token } = await response.json();
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", token);
       setUser(user);
       toast({
         title: "Реєстрація успішна",
@@ -72,11 +76,26 @@ export function useAuthProvider(): AuthContextType {
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
     toast({
       title: "Ви вийшли",
       description: "До побачення!",
     });
   };
+
+  // Load user from localStorage on app start
+  useEffect(() => {
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch (error) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+      }
+    }
+  }, []);
 
   return {
     user,
