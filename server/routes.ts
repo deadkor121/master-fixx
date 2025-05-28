@@ -3,6 +3,8 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertUserSchema, insertBookingSchema, insertReviewSchema } from "@shared/schema";
 import { z } from "zod";
+import { hashPassword, comparePassword, validateId } from "./utils/auth";
+import { generateToken, verifyToken, optionalAuth, type AuthRequest } from "./middleware/auth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
