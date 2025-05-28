@@ -46,20 +46,23 @@ export class DatabaseStorage implements IStorage {
 
   async getMasterWithDetails(id: number): Promise<MasterWithUser | undefined> {
     const masterResult = await db
-      .select()
+      .select({
+        master: masters,
+        user: users
+      })
       .from(masters)
-      .leftJoin(users, eq(masters.userId, users.id))
+      .innerJoin(users, eq(masters.userId, users.id))
       .where(eq(masters.id, id));
 
-    if (!masterResult[0] || !masterResult[0].users) return undefined;
+    if (!masterResult[0]) return undefined;
 
     const masterServices = await this.getServicesByMaster(id);
     const categoriesResult = await db.select().from(serviceCategories);
     const category = categoriesResult[0] || { id: 1, name: "Загальні", description: "", icon: "", color: "blue", basePrice: "300" };
 
     return {
-      ...masterResult[0].masters,
-      user: masterResult[0].users,
+      ...masterResult[0].master,
+      user: masterResult[0].user,
       services: masterServices,
       category,
     };
@@ -67,25 +70,26 @@ export class DatabaseStorage implements IStorage {
 
   async getAllMasters(): Promise<MasterWithUser[]> {
     const mastersResult = await db
-      .select()
+      .select({
+        master: masters,
+        user: users
+      })
       .from(masters)
-      .leftJoin(users, eq(masters.userId, users.id));
+      .innerJoin(users, eq(masters.userId, users.id));
 
     const categoriesResult = await db.select().from(serviceCategories);
     const category = categoriesResult[0] || { id: 1, name: "Загальні", description: "", icon: "", color: "blue", basePrice: "300" };
 
     const mastersWithDetails = await Promise.all(
-      mastersResult
-        .filter(result => result.users)
-        .map(async (result) => {
-          const masterServices = await this.getServicesByMaster(result.masters.id);
-          return {
-            ...result.masters,
-            user: result.users!,
-            services: masterServices,
-            category,
-          };
-        })
+      mastersResult.map(async (result) => {
+        const masterServices = await this.getServicesByMaster(result.master.id);
+        return {
+          ...result.master,
+          user: result.user,
+          services: masterServices,
+          category,
+        };
+      })
     );
 
     return mastersWithDetails;

@@ -8,7 +8,7 @@ import { generateToken, verifyToken, optionalAuth, type AuthRequest } from "./mi
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
-  app.post("/api/auth/register", async (req, res) => {
+  app.post("/api/auth/register", async (req, res, next) => {
     try {
       const userData = insertUserSchema.parse(req.body);
       
@@ -23,14 +23,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Користувач з таким іменем вже існує" });
       }
 
-      const user = await storage.createUser(userData);
-      res.json({ user: { ...user, password: undefined } });
+      // Hash password before storing
+      const hashedPassword = await hashPassword(userData.password);
+      const userToCreate = { ...userData, password: hashedPassword };
+
+      const user = await storage.createUser(userToCreate);
+      
+      // Generate JWT token
+      const token = generateToken({
+        id: user.id,
+        email: user.email,
+        userType: user.userType
+      });
+
+      res.json({ 
+        user: { ...user, password: undefined },
+        token 
+      });
     } catch (error) {
-      res.status(400).json({ message: "Помилка валідації даних" });
+      next(error);
     }
   });
 
-  app.post("/api/auth/login", async (req, res) => {
+  app.post("/api/auth/login", async (req, res, next) => {
     try {
       const { email, password } = req.body;
       
@@ -39,13 +54,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = await storage.getUserByEmail(email);
-      if (!user || user.password !== password) {
+      if (!user) {
         return res.status(401).json({ message: "Невірний email або пароль" });
       }
 
-      res.json({ user: { ...user, password: undefined } });
+      // Compare hashed password
+      const isPasswordValid = await comparePassword(password, user.password);
+      if (!isPasswordValid) {
+        return res.status(401).json({ message: "Невірний email або пароль" });
+      }
+
+      // Generate JWT token
+      const token = generateToken({
+        id: user.id,
+        email: user.email,
+        userType: user.userType
+      });
+
+      res.json({ 
+        user: { ...user, password: undefined },
+        token 
+      });
     } catch (error) {
-      res.status(500).json({ message: "Помилка сервера" });
+      next(error);
     }
   });
 
@@ -59,9 +90,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/categories/:id", async (req, res) => {
+  app.get("/api/categories/:id", async (req, res, next) => {
     try {
-      const id = parseInt(req.params.id);
+      const id = validateId(req.params.id);
+      if (!id) {
+        return res.status(400).json({ message: "Невірний ID категорії" });
+      }
+
       const category = await storage.getServiceCategory(id);
       
       if (!category) {
@@ -70,7 +105,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json(category);
     } catch (error) {
-      res.status(500).json({ message: "Помилка завантаження категорії" });
+      next(error);
     }
   });
 
@@ -93,9 +128,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/masters/:id", async (req, res) => {
+  app.get("/api/masters/:id", async (req, res, next) => {
     try {
-      const id = parseInt(req.params.id);
+      const id = validateId(req.params.id);
+      if (!id) {
+        return res.status(400).json({ message: "Невірний ID майстра" });
+      }
+
       const master = await storage.getMasterWithDetails(id);
       
       if (!master) {
@@ -104,7 +143,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json(master);
     } catch (error) {
-      res.status(500).json({ message: "Помилка завантаження майстра" });
+      next(error);
     }
   });
 
@@ -202,8 +241,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json(masters);
     } catch (error) {
-      res.status(500).json({ message: "Помилка пошуку" });
+      next(error);
     }
+  });
+
+  // Global error handler
+  app.use((err: any, req: any, res: any, next: any) => {
+    console.error("Error:", err);
+    
+    if (err.name === 'ZodError') {
+      return res.status(400).json({ 
+        message: "Помилка валідації даних",
+        details: err.errors 
+      });
+    }
+    
+    res.status(500).json({ 
+      message: "Внутрішня помилка сервера" 
+    });
   });
 
   const httpServer = createServer(app);
