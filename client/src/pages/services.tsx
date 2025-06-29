@@ -1,49 +1,119 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Star, Search, Filter } from "lucide-react";
 import { type MasterWithUser, type ServiceCategory } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useDebounce } from "@/hooks/use-Debounce";
+import { MasterProfileModal } from "@/components/modals/master-profile-modal";
+import { BookingModal } from "@/components/modals/booking-modal";
 
 export default function Services() {
+  const [location, setLocation] = useLocation(); 
+
+
+  // Читаем query параметры из URL
+  useEffect(() => {
+    const params = new URLSearchParams(location.split("?")[1] || "");
+    const queryParam = params.get("query") || "";
+    const cityParam = params.get("city") || "all";
+
+    setSearchQuery(queryParam);
+    setSelectedCity(cityParam);
+  }, [location]);
+
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [selectedCity, setSelectedCity] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedCity, setSelectedCity] = useState<string>("all");
+
+  const [selectedMasterId, setSelectedMasterId] = useState<number | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [bookingModalOpen, setBookingModalOpen] = useState(false);
+  const [bookingMasterId, setBookingMasterId] = useState<number | null>(null);
+
+  const handleBookingOpen = (id: number) => {
+    setBookingMasterId(id);
+    setBookingModalOpen(true);
+  };
+
+  const handleBookingClose = () => {
+    setBookingModalOpen(false);
+    setBookingMasterId(null);
+  };
+
+  const handleOpenModal = (id: number) => {
+    setSelectedMasterId(id);
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedMasterId(null);
+  };
+
+  const debouncedQuery = useDebounce(searchQuery, 500);
 
   const { data: categories } = useQuery<ServiceCategory[]>({
     queryKey: ["/api/categories"],
+    queryFn: () => fetch("/api/categories").then((res) => res.json()),
   });
 
   const { data: masters, isLoading } = useQuery<MasterWithUser[]>({
-    queryKey: ["/api/search", { query: searchQuery, city: selectedCity, category: selectedCategory }],
+    queryKey: [
+      "/api/search",
+      { query: debouncedQuery, city: selectedCity, category: selectedCategory },
+    ],
+    queryFn: () => {
+      const params = new URLSearchParams();
+      if (debouncedQuery) params.append("query", debouncedQuery);
+      if (selectedCity !== "all") params.append("city", selectedCity);
+      if (selectedCategory !== "all")
+        params.append("category", selectedCategory);
+
+      return fetch(`/api/search?${params.toString()}`).then((res) =>
+        res.json()
+      );
+    },
   });
 
-  const handleSearch = () => {
-    // The query will automatically refetch due to the dependency array
-  };
-
-  const filteredMasters = masters?.filter(master => {
-    if (selectedCategory && !master.services.some(service => 
-      service.categoryId === parseInt(selectedCategory)
-    )) {
+  const filteredMasters = masters?.filter((master) => {
+    if (
+      selectedCategory !== "all" &&
+      !master.services.some(
+        (service) => service.categoryId === parseInt(selectedCategory)
+      )
+    ) {
       return false;
     }
     return true;
   });
 
+  // Автообновляем URL при изменении поиска или города
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (searchQuery) params.set("query", searchQuery);
+    if (selectedCity !== "all") params.set("city", selectedCity);
+
+    setLocation(`/services?${params.toString()}`, { replace: true });
+  }, [searchQuery, selectedCity, setLocation]);
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header 
-        onOpenLogin={() => {}}
-        onOpenRegister={() => {}}
-      />
-      
+      <Header onOpenLogin={() => {}} onOpenRegister={() => {}} />
+
       <main className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Page Header */}
@@ -73,14 +143,20 @@ export default function Services() {
                   </div>
                 </div>
                 <div>
-                  <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                  <Select
+                    value={selectedCategory}
+                    onValueChange={setSelectedCategory}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Категорія" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Всі категорії</SelectItem>
-                      {categories?.map(category => (
-                        <SelectItem key={category.id} value={category.id.toString()}>
+                      <SelectItem value="all">Всі категорії</SelectItem>
+                      {categories?.map((category) => (
+                        <SelectItem
+                          key={category.id}
+                          value={String(category.id)}
+                        >
                           {category.name}
                         </SelectItem>
                       ))}
@@ -93,7 +169,7 @@ export default function Services() {
                       <SelectValue placeholder="Місто" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Всі міста</SelectItem>
+                      <SelectItem value="all">Всі міста</SelectItem>
                       <SelectItem value="kyiv">Київ</SelectItem>
                       <SelectItem value="kharkiv">Харків</SelectItem>
                       <SelectItem value="odesa">Одеса</SelectItem>
@@ -113,9 +189,7 @@ export default function Services() {
             </h2>
             <div className="flex items-center space-x-2 text-gray-600">
               <Filter className="h-4 w-4" />
-              <span>
-                Знайдено: {filteredMasters?.length || 0} майстрів
-              </span>
+              <span>Знайдено: {filteredMasters?.length || 0} майстрів</span>
             </div>
           </div>
 
@@ -142,7 +216,10 @@ export default function Services() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredMasters?.map((master) => (
-                <Card key={master.id} className="hover:shadow-lg transition-shadow">
+                <Card
+                  key={master.id}
+                  className="hover:shadow-lg transition-shadow"
+                >
                   <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
                     <div className="w-20 h-20 bg-gray-300 rounded-full flex items-center justify-center">
                       <span className="text-2xl text-gray-600">👤</span>
@@ -159,8 +236,10 @@ export default function Services() {
                             <Star key={i} className="w-4 h-4 fill-current" />
                           ))}
                         </div>
-                        <span className="text-gray-600 text-sm">
-                          {parseFloat(master.rating).toFixed(1)}
+                        <span>
+                          {master.rating != null
+                            ? parseFloat(master.rating.toString()).toFixed(1)
+                            : "0.0"}
                         </span>
                       </div>
                     </div>
@@ -174,7 +253,10 @@ export default function Services() {
                       <span className="text-lg font-bold text-gray-900">
                         від {master.hourlyRate} грн
                       </span>
-                      <Button className="bg-primary text-white hover:bg-primary/90">
+                      <Button
+                        onClick={() => handleOpenModal(master.id)}
+                        className="bg-primary text-white hover:bg-primary/90"
+                      >
                         Переглянути
                       </Button>
                     </div>
@@ -193,14 +275,33 @@ export default function Services() {
                 Нічого не знайдено
               </h3>
               <p className="text-gray-600">
-                Спробуйте змінити параметри пошуку або очистити фільтри
+                Спробуйте змінити умови пошуку або фільтри.
               </p>
             </div>
           )}
         </div>
       </main>
-      
+
       <Footer />
+
+      {/* Master Profile Modal */}
+      {selectedMasterId && (
+        <MasterProfileModal
+          isOpen={modalOpen}
+          onClose={handleCloseModal}
+          masterId={selectedMasterId}
+          onBookingOpen={handleBookingOpen}
+        />
+      )}
+
+      {/* Booking Modal */}
+      {bookingMasterId && (
+        <BookingModal
+          isOpen={bookingModalOpen}
+          onClose={handleBookingClose}
+          masterId={bookingMasterId}
+        />
+      )}
     </div>
   );
 }

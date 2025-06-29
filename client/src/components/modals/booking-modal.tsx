@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,11 @@ interface BookingModalProps {
 }
 
 export function BookingModal({ isOpen, onClose, masterId }: BookingModalProps) {
+useEffect(() => {
+  console.log("BookingModal masterId:", masterId);
+  console.log("BookingModal isOpen:", isOpen);
+}, [masterId, isOpen]);
+  
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -29,11 +34,16 @@ export function BookingModal({ isOpen, onClose, masterId }: BookingModalProps) {
     scheduledTime: "",
     description: "",
     masterId: masterId || 0,
-    serviceId: 1, // Default service
+    serviceId: 1,
   });
+
+  useEffect(() => {
+    setFormData((prev) => ({ ...prev, masterId: masterId || 0 }));
+  }, [masterId]);
 
   const { data: master } = useQuery<MasterWithUser>({
     queryKey: ["/api/masters", masterId],
+    queryFn: () => apiRequest("GET", `/api/masters/${masterId}`).then((res) => res.json()),
     enabled: !!masterId && isOpen,
   });
 
@@ -41,7 +51,7 @@ export function BookingModal({ isOpen, onClose, masterId }: BookingModalProps) {
     mutationFn: async (data: BookingFormData) => {
       const response = await apiRequest("POST", "/api/bookings", {
         ...data,
-        clientId: 1, // This would come from auth context in real app
+        clientId: 1, // TODO: Replace with authenticated user
         estimatedPrice: master?.hourlyRate || "300",
       });
       return response.json();
@@ -76,18 +86,18 @@ export function BookingModal({ isOpen, onClose, masterId }: BookingModalProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!masterId) return;
-    
+
     bookingMutation.mutate({
       ...formData,
       masterId,
     });
   };
 
-  const handleChange = (field: keyof BookingFormData) => (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData(prev => ({ ...prev, [field]: e.target.value }));
-  };
+  const handleChange =
+    (field: keyof BookingFormData) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setFormData((prev) => ({ ...prev, [field]: e.target.value }));
+    };
 
   const timeSlots = [
     "09:00", "10:00", "11:00", "12:00", "13:00",
@@ -112,7 +122,7 @@ export function BookingModal({ isOpen, onClose, masterId }: BookingModalProps) {
         {master && (
           <div className="bg-gray-50 rounded-lg p-4 mb-6">
             <h4 className="font-semibold text-gray-900 mb-2">
-              {master.user.firstName} {master.user.lastName}
+              {master.user ? `${master.user.firstName} ${master.user.lastName}` : "Завантаження..."}
             </h4>
             <p className="text-sm text-gray-600 mb-2">{master.specialization}</p>
             <p className="text-lg font-bold text-primary">від {master.hourlyRate} грн</p>
@@ -180,15 +190,15 @@ export function BookingModal({ isOpen, onClose, masterId }: BookingModalProps) {
               <Label className="block text-sm font-medium text-gray-700 mb-2">
                 Час
               </Label>
-              <Select 
-                value={formData.scheduledTime} 
-                onValueChange={(value) => setFormData(prev => ({ ...prev, scheduledTime: value }))}
+              <Select
+                value={formData.scheduledTime}
+                onValueChange={(value) => setFormData((prev) => ({ ...prev, scheduledTime: value }))}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Оберіть час" />
                 </SelectTrigger>
                 <SelectContent>
-                  {timeSlots.map(time => (
+                  {timeSlots.map((time) => (
                     <SelectItem key={time} value={time}>
                       {time}
                     </SelectItem>
@@ -225,10 +235,10 @@ export function BookingModal({ isOpen, onClose, masterId }: BookingModalProps) {
 
           <Button
             type="submit"
-            disabled={bookingMutation.isPending}
+            disabled={bookingMutation.status === "pending"}
             className="w-full bg-primary text-white hover:bg-primary/90 font-semibold"
           >
-            {bookingMutation.isPending ? "Відправляємо..." : "Відправити заявку"}
+            {bookingMutation.status === "pending" ? "Відправляємо..." : "Відправити заявку"}
           </Button>
         </form>
 

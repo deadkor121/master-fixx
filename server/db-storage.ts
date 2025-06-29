@@ -29,10 +29,58 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createUser(user: InsertUser): Promise<User> {
-    const result = await db.insert(users).values(user).returning();
+    const result = await db.insert(users).values({ ...user, category: user.category ?? null }).returning();
     return result[0];
   }
 
+ 
+  async updateUserProfile(
+    userId: number,
+    data: {
+      firstName: string;
+      lastName: string;
+      middleName?: string | null;
+      city?: string | null;
+      birthDate?: string | null;
+      gender?: string | null;
+      about?: string | null;
+      category?: string | null;
+    }
+  ): Promise<User> {
+    const result = await db
+      .update(users)
+      .set({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        middleName: data.middleName ?? null,
+        city: data.city ?? null,
+        birthDate: data.birthDate ?? null,
+        gender: data.gender ?? null,
+        about: data.about ?? null,
+        category: data.category ?? null,
+      })
+      .where(eq(users.id, userId))
+      .returning();
+  
+    return result[0] as User;
+  }
+  async updateMasterProfile(
+    userId: number,
+    data: {
+      specialization: string;
+    
+    }
+  ): Promise<Master> {
+    const result = await db
+      .update(masters)
+      .set({
+        specialization: data.specialization,
+      
+      })
+      .where(eq(masters.userId, userId))
+      .returning();
+    return result[0] as Master;
+  }
   // Masters
   async getMaster(id: number): Promise<Master | undefined> {
     const result = await db.select().from(masters).where(eq(masters.id, id));
@@ -48,18 +96,43 @@ export class DatabaseStorage implements IStorage {
     const masterResult = await db
       .select({
         master: masters,
-        user: users
+        user: {
+          id: users.id,
+          username: users.username,
+          email: users.email,
+          phone: users.phone,
+          firstName: users.firstName,
+          lastName: users.lastName,
+          userType: users.userType,
+          category: users.category,
+          createdAt: users.createdAt,
+          // Додай ці:
+          about: users.about,
+          birthDate: users.birthDate,
+          middleName: users.middleName,
+          gender: users.gender,
+          city: users.city,
+        },
       })
       .from(masters)
       .innerJoin(users, eq(masters.userId, users.id))
       .where(eq(masters.id, id));
-
+  
     if (!masterResult[0]) return undefined;
-
+  
     const masterServices = await this.getServicesByMaster(id);
     const categoriesResult = await db.select().from(serviceCategories);
-    const category = categoriesResult[0] || { id: 1, name: "Загальні", description: "", icon: "", color: "blue", basePrice: "300" };
-
+    const category =
+      categoriesResult[0] ||
+      {
+        id: 1,
+        name: "Загальні",
+        description: "",
+        icon: "",
+        color: "blue",
+        basePrice: "300",
+      };
+  
     return {
       ...masterResult[0].master,
       user: masterResult[0].user,
@@ -67,34 +140,48 @@ export class DatabaseStorage implements IStorage {
       category,
     };
   }
-
   async getAllMasters(): Promise<MasterWithUser[]> {
     const mastersResult = await db
       .select({
         master: masters,
-        user: users
+        user: {
+          id: users.id,
+          username: users.username,
+          email: users.email,
+          phone: users.phone,
+          firstName: users.firstName,
+          lastName: users.lastName,
+          userType: users.userType,
+          category: users.category,
+          createdAt: users.createdAt,
+          about: users.about,
+          birthDate: users.birthDate,
+          middleName: users.middleName,
+          gender: users.gender,
+          city: users.city,
+          // password: users.password, // НЕ добавляйте password!
+        },
       })
       .from(masters)
       .innerJoin(users, eq(masters.userId, users.id));
-
+  
     const categoriesResult = await db.select().from(serviceCategories);
     const category = categoriesResult[0] || { id: 1, name: "Загальні", description: "", icon: "", color: "blue", basePrice: "300" };
-
+  
     const mastersWithDetails = await Promise.all(
       mastersResult.map(async (result) => {
         const masterServices = await this.getServicesByMaster(result.master.id);
         return {
           ...result.master,
-          user: result.user,
+          user: result.user, // это PublicUser
           services: masterServices,
           category,
         };
       })
     );
-
+  
     return mastersWithDetails;
   }
-
   async getMastersByCategory(categoryId: number): Promise<MasterWithUser[]> {
     const allMasters = await this.getAllMasters();
     return allMasters.filter(master => 
@@ -142,6 +229,20 @@ export class DatabaseStorage implements IStorage {
   async createService(service: InsertService): Promise<Service> {
     const result = await db.insert(services).values(service).returning();
     return result[0];
+  }
+
+
+  async updateService(serviceId: number, data: Partial<InsertService>): Promise<Service> {
+    const result = await db
+      .update(services)
+      .set(data)
+      .where(eq(services.id, serviceId))
+      .returning();
+    return result[0];
+  }
+
+  async deleteService(serviceId: number): Promise<void> {
+    await db.delete(services).where(eq(services.id, serviceId));
   }
 
   // Bookings

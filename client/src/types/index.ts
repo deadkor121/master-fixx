@@ -1,5 +1,5 @@
 export * from "@shared/schema";
-
+import { User, ServiceCategory } from "@shared/schema";
 export interface ModalState {
   login: boolean;
   register: boolean;
@@ -32,6 +32,10 @@ export interface RegisterFormData {
   lastName: string;
   phone: string;
   userType: 'client' | 'master';
+  category?: string;
+  experience?: string;
+  completedJobs?: number;
+  bio?: string;
 }
 
 export interface SearchFilters {

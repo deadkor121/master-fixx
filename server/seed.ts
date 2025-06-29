@@ -1,8 +1,12 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import { db } from "./db";
 import { users, masters, serviceCategories, services } from "@shared/schema";
 
 async function seedDatabase() {
   console.log("🌱 Seeding database...");
+  console.log('DATABASE_URL:', process.env.DATABASE_URL);
 
   // Insert service categories
   const categories = await db.insert(serviceCategories).values([

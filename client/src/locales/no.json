@@ -1,0 +1,263 @@
+{
+  "about_master": "Om håndverkeren",
+  "order_service": "Bestill tjeneste",
+  "city": "By",
+  "birth_date": "Fødselsdato",
+  "middle_name": "Mellomnavn",
+  "gender": "Kjønn",
+  "overview": "Oversikt",
+  "services_and_prices": "Tjenester og priser",
+  "reviews": "Anmeldelser",
+  "clients_total": "Totalt antall kunder",
+  "completed_jobs": "Fullførte jobber",
+  "response_time": "Responstid",
+  "male": "Mann",
+  "female": "Kvinne",
+  "no_data": "—",
+  "header": {
+    "services": "Tjenester",
+    "masters": "Håndverkere",
+    "howItWorks": "Slik fungerer det",
+    "about": "Om oss",
+    "profile": "Profil",
+    "login": "Logg inn",
+    "register": "Registrer deg"
+  },
+  "hero": {
+    "title": {
+      "1": "Finn en",
+      "2": "profesjonell håndverker",
+      "3": "i din by"
+    },
+    "subtitle": "Rørleggere, elektrikere, rengjørere, reparatører og andre kvalifiserte spesialister er klare til å hjelpe deg",
+    "inputPlaceholder": "Hva trenger du? (for eksempel: rørlegger)",
+    "city": "By",
+    "find": "Finn",
+    "cities": {
+      "oslo": "Oslo",
+      "bergen": "Bergen",
+      "trondheim": "Trondheim",
+      "stavanger": "Stavanger",
+      "tromso": "Tromsø"
+    }
+  },
+  "howItWorks": {
+    "title": "Slik fungerer det",
+    "subtitle": "En enkel måte å finne en håndverker på i 3 trinn",
+    "steps": [
+      {
+        "title": "Velg en tjeneste",
+        "description": "Velg ønsket tjenestekategori eller bruk søket"
+      },
+      {
+        "title": "Velg en håndverker",
+        "description": "Se profiler, anmeldelser og priser. Velg den beste spesialisten"
+      },
+      {
+        "title": "Bestill tjenesten",
+        "description": "Kontakt håndverkeren, diskuter detaljer og avtal tid"
+      }
+    ]
+  },
+  "profileForm": {
+    "title": "Rediger profil",
+    "firstName": "Fornavn",
+    "lastName": "Etternavn",
+    "middleName": "Mellomnavn",
+    "city": "By",
+    "birthDate": "Fødselsdato",
+    "gender": "Kjønn",
+    "genderSelect": "Velg kjønn",
+    "male": "Mann",
+    "female": "Kvinne",
+    "about": "Om deg",
+    "aboutPlaceholder": "Beskriv dine tjenester, erfaring, verktøy, sterke sider og hobbyer...",
+    "aboutMin": "Minst 230 tegn. Gjenstår:",
+    "role": "Rolle",
+    "client": "Klient",
+    "master": "Håndverker",
+    "category": "Kategori",
+    "categorySelect": "Velg kategori",
+    "categories": {
+      "apartment_repair": "Leilighetsoppussing",
+      "electrician": "Elektriker",
+      "plumbing": "Rørlegger",
+      "furniture_assembly": "Møbelmontering",
+      "cleaning": "Rengjøring",
+      "construction": "Byggearbeid",
+      "repair": "Reparasjon av utstyr",
+      "moving": "Flytting",
+      "other": "Annet"
+    },
+    "errors": {
+      "firstName": "Fornavn er påkrevd",
+      "lastName": "Etternavn er påkrevd",
+      "city": "By er påkrevd",
+      "birthDate": "Fødselsdato er påkrevd",
+      "gender": "Kjønn er påkrevd",
+      "about": "\"Om deg\" må inneholde minst 230 tegn",
+      "role": "Rolle er påkrevd",
+      "category": "Kategori er påkrevd for håndverker"
+    },
+    "save": "Lagre",
+    "saving": "Lagrer...",
+    "saveError": "Feil",
+    "saveSuccess": "Lagret!"
+  },
+  "serviceCategories": {
+    "title": "Populære tjenester",
+    "subtitle": "Velg tjenestekategorien du trenger",
+    "from": "fra",
+    "currency": "kr"
+  },
+  "featuredMasters": {
+    "title": "Anbefalte håndverkere",
+    "subtitle": "De beste spesialistene i ditt område",
+    "from": "fra",
+    "currency": "kr",
+    "order": "Bestill",
+    "allMasters": "Se alle håndverkere"
+  },
+  "footer": {
+    "slogan": "Profesjonelle tjenester i din by. Finn kvalifiserte håndverkere raskt og trygt.",
+    "servicesTitle": "Tjenester",
+    "services": {
+      "plumbing": "Rørlegger",
+      "electrical": "Elektriker",
+      "cleaning": "Rengjøring",
+      "renovation": "Oppussing",
+      "appliances": "Hvitevarer"
+    },
+    "companyTitle": "Selskap",
+    "company": {
+      "about": "Om oss",
+      "howItWorks": "Slik fungerer det",
+      "becomeMaster": "Bli håndverker",
+      "support": "Support",
+      "blog": "Blogg"
+    },
+    "contactsTitle": "Kontakt",
+    "contacts": {
+      "phone": "+47 12 34 56 78",
+      "email": "info@master-house.no",
+      "address": "Oslo, Karl Johans gate 1"
+    },
+    "rights": "Alle rettigheter reservert."
+  },
+  "workGallery": {
+    "title": "Galleri over våre håndverkeres arbeid",
+    "subtitle": "Se eksempler på kvalitetsarbeid",
+    "masterLabel": "Håndverker:",
+    "cta": "Vil du vise frem dine arbeider her?",
+    "becomeMaster": "Bli håndverker",
+    "viewAll": "Se alle arbeider",
+    "items": [
+      {
+        "title": "Renovering av bad",
+        "category": "Rørlegger",
+        "masterName": "Ole Pettersen",
+        "price": "fra 2500 kr",
+        "description": "Full renovering av bad med utskifting av rør og sanitærutstyr"
+      },
+      {
+        "title": "Montering av aircondition",
+        "category": "Elektriker",
+        "masterName": "Ivar Johansen",
+        "price": "fra 1800 kr",
+        "description": "Profesjonell montering og oppsett av aircondition"
+      },
+      {
+        "title": "Flislegging",
+        "category": "Oppussing",
+        "masterName": "Per Hansen",
+        "price": "fra 400 kr/m²",
+        "description": "Kvalitetsmessig legging av keramiske fliser"
+      },
+      {
+        "title": "Montering av møbler",
+        "category": "Møbelmontering",
+        "masterName": "Anders Sæther",
+        "price": "fra 300 kr",
+        "description": "Rask og profesjonell montering av møbler"
+      },
+      {
+        "title": "Rengjøring etter oppussing",
+        "category": "Rengjøring",
+        "masterName": "Maria Nilsen",
+        "price": "fra 25 kr/m²",
+        "description": "Grundig rengjøring etter byggearbeid"
+      },
+      {
+        "title": "Reparasjon av vaskemaskin",
+        "category": "Hvitevarer",
+        "masterName": "Sverre Moen",
+        "price": "fra 500 kr",
+        "description": "Diagnostikk og reparasjon av vaskemaskiner"
+      }
+    ]
+  },
+  "profile": {
+    "errors": {
+      "load": "Kunne ikke laste profilen",
+      "save": "Kunne ikke lagre profilen"
+    }
+  },
+  "about": {
+    "badge": "Om Master-House",
+    "title": {
+      "part1": "Din pålitelige partner for",
+      "part2": "hustjenester"
+    },
+    "description": "Master-House er Ukrainas ledende plattform som forbinder huseiere med godkjente fagfolk innen ulike spesialiteter.",
+    "stats": {
+      "trustedMasters": "Pålitelige mestere",
+      "completedOrders": "Fullførte oppdrag",
+      "cities": "Byer i Ukraina",
+      "averageRating": "Gjennomsnittlig vurdering"
+    },
+    "story": {
+      "title": "Vår historie",
+      "p1": "Master-House ble grunnlagt i 2019 med et enkelt mål: å gjøre det enkelt og trygt å finne pålitelige fagfolk for hver ukrainsk familie.",
+      "p2": "Vi startet som et lite team av entusiaster som forsto problemene med å finne kvalitetsservice innen reparasjon og vedlikehold av hjem. I dag er vi den største plattformen for hustjenester i Ukraina.",
+      "p3": "I løpet av årene har vi hjulpet tusenvis av ukrainere med å finne pålitelige fagfolk, og tusenvis av profesjonelle med å bygge opp sin virksomhet og finne faste kunder.",
+      "subtitle": "Mer enn en plattform",
+      "subdescription": "Vi skaper et tillitssamfunn mellom kunder og fagfolk"
+    },
+    "valuesTitle": "Våre verdier",
+    "valuesDescription": "Prinsippene vi følger i vårt arbeid",
+    "values": {
+      "safety": {
+        "title": "Sikkerhet",
+        "description": "Alle fagfolk gjennomgår dokument- og kvalifikasjonskontroll"
+      },
+      "speed": {
+        "title": "Hastighet",
+        "description": "Vi finner en fagperson innen 15 minutter, når som helst på døgnet"
+      },
+      "quality": {
+        "title": "Kvalitet",
+        "description": "Vi garanterer høy kvalitet på arbeidet og beskyttelse av dine interesser"
+      },
+      "trust": {
+        "title": "Tillitt",
+        "description": "Mer enn 5 år med pålitelig service og tusenvis av fornøyde kunder"
+      }
+    },
+    "teamTitle": "Master-House teamet",
+    "teamDescription": "Profesjonelle som jobber for din komfort",
+    "team": {
+      "support": {
+        "title": "24/7",
+        "description": "Kundestøtte"
+      },
+      "verified": {
+        "title": "100%",
+        "description": "Verifiserte fagfolk"
+      },
+      "guarantee": {
+        "title": "Garanti",
+        "description": "På alt arbeid"
+      }
+    }
+  }
+}

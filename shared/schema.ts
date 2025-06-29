@@ -11,7 +11,14 @@ export const users = pgTable("users", {
   lastName: text("last_name").notNull(),
   phone: text("phone"),
   userType: text("user_type").notNull(), // 'client' or 'master'
+  category: text("category"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  middleName: text("middle_name"),
+  city: text("city"),           // <--- добавить
+  birthDate: text("birth_date"),// <--- добавить (или date, если используете date)
+  gender: text("gender"),       // <--- добавить
+  about: text("about"),         // <--- добавить
+ 
 });
 
 export const masters = pgTable("masters", {
@@ -79,7 +86,7 @@ export const reviews = pgTable("reviews", {
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
-});
+}as const);
 
 export const insertMasterSchema = createInsertSchema(masters).omit({
   id: true,
@@ -87,7 +94,7 @@ export const insertMasterSchema = createInsertSchema(masters).omit({
   reviewCount: true,
   completedJobs: true,
   repeatClients: true,
-});
+}as const);
 
 export const insertServiceCategorySchema = createInsertSchema(serviceCategories).omit({
   id: true,
@@ -128,10 +135,12 @@ export type Review = typeof reviews.$inferSelect;
 export type InsertReview = z.infer<typeof insertReviewSchema>;
 
 // Extended types for frontend
+export type PublicUser = Omit<User, "password">;
 export type MasterWithUser = Master & {
-  user: User;
+  user: PublicUser;
   services: Service[];
   category: ServiceCategory;
+  clientsCount?: number; 
 };
 
 export type BookingWithDetails = Booking & {
@@ -143,4 +152,7 @@ export type BookingWithDetails = Booking & {
 export type ReviewWithDetails = Review & {
   master: Master;
   client: User;
+  name?: string;
+  text?: string;
+  date?: string;
 };

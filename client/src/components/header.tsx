@@ -17,10 +17,12 @@ export function Header({ onOpenLogin, onOpenRegister }: HeaderProps) {
               <Home className="h-5 w-5 text-white" />
             </div>
             <Link href="/">
-              <span className="text-2xl font-bold text-primary">Master-House</span>
+              <span className="text-2xl font-bold text-primary">
+                Master-House
+              </span>
             </Link>
           </div>
-          
+
           <nav className="hidden md:flex items-center space-x-8">
             <Link href="/services">
               <span className="text-gray-700 hover:text-primary font-medium transition-colors">
@@ -42,25 +44,30 @@ export function Header({ onOpenLogin, onOpenRegister }: HeaderProps) {
                 Про нас
               </span>
             </Link>
+            <Link href="/profile">
+              <span className="text-gray-700 hover:text-primary font-medium transition-colors">
+                Профіль
+              </span>
+            </Link>
           </nav>
 
           <div className="flex items-center space-x-4">
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               onClick={onOpenLogin}
               className="text-gray-700 hover:text-primary font-medium"
             >
               Увійти
             </Button>
-            <Button 
+            <Button
               onClick={onOpenRegister}
               className="bg-primary text-white hover:bg-primary/90 font-medium"
             >
               Реєстрація
             </Button>
-            <Button 
-              variant="ghost" 
-              size="icon" 
+            <Button
+              variant="ghost"
+              size="icon"
               className="md:hidden text-gray-700"
             >
               <Menu className="h-5 w-5" />

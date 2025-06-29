@@ -1,10 +1,21 @@
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { UserPlus } from "lucide-react";
 import { type RegisterFormData } from "@/types";
 
@@ -16,12 +27,12 @@ interface RegisterModalProps {
   isLoading: boolean;
 }
 
-export function RegisterModal({ 
-  isOpen, 
-  onClose, 
-  onSwitchToLogin, 
+export function RegisterModal({
+  isOpen,
+  onClose,
+  onSwitchToLogin,
   onRegister,
-  isLoading 
+  isLoading,
 }: RegisterModalProps) {
   const [formData, setFormData] = useState<RegisterFormData>({
     username: "",
@@ -32,13 +43,17 @@ export function RegisterModal({
     lastName: "",
     phone: "",
     userType: "client",
+    category: "",
+    experience: "",
+    completedJobs: 0,
+    bio: "",
   });
 
   const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!acceptedTerms) {
       return;
     }
@@ -55,6 +70,10 @@ export function RegisterModal({
         lastName: "",
         phone: "",
         userType: "client",
+        category: "",
+        experience: "",
+        completedJobs: 0,
+        bio: "",
       });
       setAcceptedTerms(false);
     } catch (error) {
@@ -62,11 +81,11 @@ export function RegisterModal({
     }
   };
 
-  const handleChange = (field: keyof RegisterFormData) => (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setFormData(prev => ({ ...prev, [field]: e.target.value }));
-  };
+  const handleChange =
+    (field: keyof RegisterFormData) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFormData((prev) => ({ ...prev, [field]: e.target.value }));
+    };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -78,7 +97,9 @@ export function RegisterModal({
                 <UserPlus className="h-8 w-8 text-white" />
               </div>
               <div>
-                <DialogTitle className="text-2xl font-bold text-gray-900">Реєстрація</DialogTitle>
+                <DialogTitle className="text-2xl font-bold text-gray-900">
+                  Реєстрація
+                </DialogTitle>
                 <p className="text-gray-600 mt-2">Створіть свій акаунт</p>
               </div>
             </div>
@@ -88,7 +109,10 @@ export function RegisterModal({
         <form onSubmit={handleSubmit} className="space-y-6 mt-6">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
+              <Label
+                htmlFor="firstName"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Ім'я
               </Label>
               <Input
@@ -101,7 +125,10 @@ export function RegisterModal({
               />
             </div>
             <div>
-              <Label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
+              <Label
+                htmlFor="lastName"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Прізвище
               </Label>
               <Input
@@ -116,7 +143,10 @@ export function RegisterModal({
           </div>
 
           <div>
-            <Label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
+            <Label
+              htmlFor="username"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Ім'я користувача
             </Label>
             <Input
@@ -130,7 +160,10 @@ export function RegisterModal({
           </div>
 
           <div>
-            <Label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+            <Label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Email
             </Label>
             <Input
@@ -144,7 +177,10 @@ export function RegisterModal({
           </div>
 
           <div>
-            <Label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+            <Label
+              htmlFor="phone"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Телефон
             </Label>
             <Input
@@ -157,7 +193,10 @@ export function RegisterModal({
           </div>
 
           <div>
-            <Label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+            <Label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Пароль
             </Label>
             <Input
@@ -171,7 +210,10 @@ export function RegisterModal({
           </div>
 
           <div>
-            <Label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+            <Label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Підтвердіть пароль
             </Label>
             <Input
@@ -188,10 +230,10 @@ export function RegisterModal({
             <Label className="block text-sm font-medium text-gray-700 mb-2">
               Тип акаунту
             </Label>
-            <Select 
-              value={formData.userType} 
-              onValueChange={(value: "client" | "master") => 
-                setFormData(prev => ({ ...prev, userType: value }))
+            <Select
+              value={formData.userType}
+              onValueChange={(value: "client" | "master") =>
+                setFormData((prev) => ({ ...prev, userType: value }))
               }
             >
               <SelectTrigger>
@@ -199,24 +241,111 @@ export function RegisterModal({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="client">Клієнт (знайти майстра)</SelectItem>
-                <SelectItem value="master">Майстер (надавати послуги)</SelectItem>
+                <SelectItem value="master">
+                  Майстер (надавати послуги)
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
 
+          {formData.userType === "master" && (
+            <>
+              <div>
+                <Label
+                  htmlFor="category"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Категорія робіт
+                </Label>
+                <Input
+                  id="category"
+                  type="text"
+                  value={formData.category || ""}
+                  onChange={handleChange("category")}
+                  placeholder="Наприклад: Сантехнік"
+                />
+              </div>
+
+              <div>
+                <Label
+                  htmlFor="experience"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Досвід (роки)
+                </Label>
+                <Input
+                  id="experience"
+                  type="text"
+                  value={formData.experience || ""}
+                  onChange={handleChange("experience")}
+                  placeholder="Наприклад: 5 років"
+                />
+              </div>
+
+              <div>
+                <Label
+                  htmlFor="completedJobs"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Виконаних робіт
+                </Label>
+                <Input
+                  id="completedJobs"
+                  type="number"
+                  min={0}
+                  value={formData.completedJobs?.toString() || "0"}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      completedJobs: Number(e.target.value),
+                    }))
+                  }
+                  placeholder="0"
+                />
+              </div>
+
+              <div>
+                <Label
+                  htmlFor="bio"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Про себе
+                </Label>
+                <Input
+                  id="bio"
+                  type="text"
+                  value={formData.bio || ""}
+                  onChange={handleChange("bio")}
+                  placeholder="Коротко розкажіть про себе"
+                />
+              </div>
+            </>
+          )}
+
           <div className="flex items-start space-x-2">
-            <Checkbox 
-              id="terms" 
+            <Checkbox
+              id="terms"
               checked={acceptedTerms}
-              onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
+              onCheckedChange={(checked) =>
+                setAcceptedTerms(checked as boolean)
+              }
             />
-            <Label htmlFor="terms" className="text-sm text-gray-600 leading-relaxed">
+            <Label
+              htmlFor="terms"
+              className="text-sm text-gray-600 leading-relaxed"
+            >
               Я погоджуюся з{" "}
-              <Button variant="link" className="text-primary hover:text-primary/80 p-0 h-auto">
+              <Button
+                variant="link"
+                className="text-primary hover:text-primary/80 p-0 h-auto"
+              >
                 умовами користування
               </Button>{" "}
               та{" "}
-              <Button variant="link" className="text-primary hover:text-primary/80 p-0 h-auto">
+              <Button
+                variant="link"
+                className="text-primary hover:text-primary/80 p-0 h-auto"
+              >
                 політикою конфіденційності
               </Button>
             </Label>

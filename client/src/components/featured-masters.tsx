@@ -89,7 +89,7 @@ export function FeaturedMasters({ onMasterSelect, onBookingOpen }: FeaturedMaste
                       ))}
                     </div>
                     <span className="text-gray-600 text-sm ml-1">
-                      {parseFloat(master.rating).toFixed(1)}
+                      {parseFloat(master.rating || "0").toFixed(1)}
                     </span>
                   </div>
                 </div>

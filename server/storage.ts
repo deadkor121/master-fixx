@@ -7,6 +7,8 @@ import {
   type Booking, type InsertBooking, type BookingWithDetails,
   type Review, type InsertReview, type ReviewWithDetails
 } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   // Users
@@ -14,6 +16,10 @@ export interface IStorage {
   getUserByEmail(email: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  updateUserProfile(
+    userId: number, 
+    data: { firstName: string; lastName: string; category?: string | null }
+  ): Promise<User>;
   
   // Masters
   getMaster(id: number): Promise<Master | undefined>;
@@ -23,6 +29,17 @@ export interface IStorage {
   getMastersByCategory(categoryId: number): Promise<MasterWithUser[]>;
   createMaster(master: InsertMaster): Promise<Master>;
   updateMasterRating(masterId: number, rating: number, reviewCount: number): Promise<void>;
+  updateMasterProfile(
+    userId: number,
+    data: {
+      specialization: string;
+      about?: string;
+      birthDate?: string;
+      middleName?: string;
+      gender?: string;
+      city?: string;
+    }
+  ): Promise<Master>;
   
   // Service Categories
   getAllServiceCategories(): Promise<ServiceCategory[]>;
@@ -207,18 +224,29 @@ export class MemStorage implements IStorage {
     return Array.from(this.users.values()).find(user => user.username === username);
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentUserId++;
-    const user: User = {
-      ...insertUser,
-      id,
-      phone: insertUser.phone || null,
-      createdAt: new Date(),
-    };
-    this.users.set(id, user);
-    return user;
+  async createUser(user: InsertUser): Promise<User> {
+    const result = await db
+      .insert(users)
+      .values({ ...user, category: user.category ?? null }) // если category undefined, ставим null
+      .returning();
+    return result[0];
   }
-
+  async updateUserProfile(
+    userId: number, 
+    data: { firstName: string; lastName: string; category?: string | null }
+  ): Promise<User> {
+    const result = await db
+      .update(users)
+      .set({
+        firstName: data.firstName,
+        lastName: data.lastName,         // ✅ теперь можно
+        category: data.category ?? null,
+      })
+      .where(eq(users.id, userId))
+      .returning();
+  
+    return result[0] as User;
+  }
   // Masters
   async getMaster(id: number): Promise<Master | undefined> {
     return this.masters.get(id);
@@ -300,10 +328,36 @@ export class MemStorage implements IStorage {
   async updateMasterRating(masterId: number, rating: number, reviewCount: number): Promise<void> {
     const master = this.masters.get(masterId);
     if (master) {
-      master.rating = rating.toString();
+      master.rating = rating.toString(); // rating соответствует полю rating
       master.reviewCount = reviewCount;
       this.masters.set(masterId, master);
     }
+  }
+
+  async updateMasterProfile(
+    userId: number,
+    data: {
+      specialization: string;
+      about?: string;
+      birthDate?: string;
+      middleName?: string;
+      gender?: string;
+      city?: string;
+    }
+  ): Promise<Master> {
+    const master = this.masters.get(userId);
+    if (!master) throw new Error("Master not found");
+
+    // Update fields
+    if (data.specialization) master.specialization = data.specialization;
+    if (data.about) master.description = data.about; // about соответствует полю description
+    if (data.birthDate) master.experience = data.birthDate; // birthDate соответствует полю experience
+    if (data.middleName) master.hourlyRate = data.middleName; // middleName соответствует полю hourlyRate
+    if (data.gender) master.rating = data.gender; // gender соответствует полю rating
+    if (data.city) master.reviewCount = Number(data.city); // city соответствует полю reviewCount
+
+    this.masters.set(userId, master);
+    return master;
   }
 
   // Service Categories
@@ -390,6 +444,28 @@ export class MemStorage implements IStorage {
       this.bookings.set(id, booking);
     }
   }
+
+
+// Отримати всі послуги майстра
+async getServicesByMasterId(masterId: number) {
+  return db.select().from(services).where(eq(services.masterId, masterId));
+}
+
+
+// Оновити послугу
+async updateService(serviceId: number, data: InsertService) {
+  const result = await db.update(services)
+    .set(data)
+    .where(eq(services.id, serviceId))
+    .returning();
+  return result[0];
+}
+
+// Видалити послугу
+async deleteService(serviceId: number) {
+  await db.delete(services).where(eq(services.id, serviceId));
+}
+
 
   // Reviews
   async getReviewsByMaster(masterId: number): Promise<ReviewWithDetails[]> {
