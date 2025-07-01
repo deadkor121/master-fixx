@@ -140,8 +140,14 @@ async function testConnection() {
     }
   }
 
-  process.on("SIGTERM", gracefulShutdown);
-  process.on("SIGINT", gracefulShutdown);
+  process.on("SIGTERM", () => {
+    console.log("Получен SIGTERM");
+    gracefulShutdown();
+  });
+  process.on("SIGINT", () => {
+    console.log("Получен SIGINT");
+    gracefulShutdown();
+  });
 
   // ── Глобальна обробка помилок ──
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

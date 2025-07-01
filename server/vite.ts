@@ -70,7 +70,7 @@ export async function setupVite(app: Express, server: Server) {
 
 // --- Изменённая функция serveStatic с базовым путем /master-fixx ---
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(process.cwd(), "dist", "public");
+  const distPath = path.resolve(process.cwd(), "dist/public");
   const basePath = "/master-fixx";
 
   if (!fs.existsSync(distPath)) {
@@ -80,10 +80,10 @@ export function serveStatic(app: Express) {
   }
 
   // Отдаём статику с префиксом /master-fixx
-  app.use("/master-fixx", express.static(distPath));
+  app.use(basePath, express.static(distPath));
 
   // SPA fallback для всех путей внутри /master-fixx/*
-  app.get("/master-fixx/*", (_req, res) => {
+  app.get(`${basePath}/*`, (_req, res) => {
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }
