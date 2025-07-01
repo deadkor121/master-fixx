@@ -80,10 +80,10 @@ export function serveStatic(app: Express) {
   }
 
   // Отдаём статику с префиксом /master-fixx
-  app.use(basePath, express.static(distPath));
+  app.use("/master-fixx", express.static(distPath));
 
   // SPA fallback для всех путей внутри /master-fixx/*
-  app.get(`${basePath}/*`, (_req, res) => {
+  app.get("/master-fixx/*", (_req, res) => {
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }
