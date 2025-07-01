@@ -22,10 +22,9 @@ import { MasterProfileModal } from "@/components/modals/master-profile-modal";
 import { BookingModal } from "@/components/modals/booking-modal";
 
 export default function Services() {
-  const [location, setLocation] = useLocation(); 
+  const [location, setLocation] = useLocation();
 
-
-  // Читаем query параметры из URL
+  // Leser query-parametere fra URL
   useEffect(() => {
     const params = new URLSearchParams(location.split("?")[1] || "");
     const queryParam = params.get("query") || "";
@@ -101,7 +100,7 @@ export default function Services() {
     return true;
   });
 
-  // Автообновляем URL при изменении поиска или города
+  // Oppdaterer URL automatisk ved endring i søk eller by
   useEffect(() => {
     const params = new URLSearchParams();
     if (searchQuery) params.set("query", searchQuery);
@@ -116,17 +115,17 @@ export default function Services() {
 
       <main className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Page Header */}
+          {/* Sidetopp */}
           <div className="text-center mb-8">
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Знайти майстра
+              Finn en håndverker
             </h1>
             <p className="text-xl text-gray-600">
-              Професійні спеціалісти готові допомогти вам
+              Profesjonelle spesialister klare til å hjelpe deg
             </p>
           </div>
 
-          {/* Search and Filters */}
+          {/* Søk og filtre */}
           <Card className="mb-8">
             <CardContent className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -135,7 +134,7 @@ export default function Services() {
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                     <Input
                       type="text"
-                      placeholder="Пошук за спеціальністю або іменем..."
+                      placeholder="Søk etter spesialitet eller navn..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="pl-10"
@@ -148,10 +147,10 @@ export default function Services() {
                     onValueChange={setSelectedCategory}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Категорія" />
+                      <SelectValue placeholder="Kategori" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">Всі категорії</SelectItem>
+                      <SelectItem value="all">Alle kategorier</SelectItem>
                       {categories?.map((category) => (
                         <SelectItem
                           key={category.id}
@@ -166,15 +165,14 @@ export default function Services() {
                 <div>
                   <Select value={selectedCity} onValueChange={setSelectedCity}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Місто" />
+                      <SelectValue placeholder="By" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">Всі міста</SelectItem>
-                      <SelectItem value="kyiv">Київ</SelectItem>
-                      <SelectItem value="kharkiv">Харків</SelectItem>
-                      <SelectItem value="odesa">Одеса</SelectItem>
-                      <SelectItem value="dnipro">Дніпро</SelectItem>
-                      <SelectItem value="lviv">Львів</SelectItem>
+                      <SelectItem value="oslo">Oslo</SelectItem>
+                      <SelectItem value="bergen">Bergen</SelectItem>
+                      <SelectItem value="trondheim">Trondheim</SelectItem>
+                      <SelectItem value="stavanger">Stavanger</SelectItem>
+                      <SelectItem value="tromso">Tromsø</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -182,14 +180,14 @@ export default function Services() {
             </CardContent>
           </Card>
 
-          {/* Results */}
+          {/* Resultater */}
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-semibold text-gray-900">
-              Результати пошуку
+              Søkeresultater
             </h2>
             <div className="flex items-center space-x-2 text-gray-600">
               <Filter className="h-4 w-4" />
-              <span>Знайдено: {filteredMasters?.length || 0} майстрів</span>
+              <span>Funnet: {filteredMasters?.length || 0} håndverkere</span>
             </div>
           </div>
 
@@ -251,13 +249,13 @@ export default function Services() {
                     </p>
                     <div className="flex items-center justify-between">
                       <span className="text-lg font-bold text-gray-900">
-                        від {master.hourlyRate} грн
+                        fra {master.hourlyRate} грн
                       </span>
                       <Button
                         onClick={() => handleOpenModal(master.id)}
                         className="bg-primary text-white hover:bg-primary/90"
                       >
-                        Переглянути
+                        Se detaljer
                       </Button>
                     </div>
                   </CardContent>
@@ -272,10 +270,10 @@ export default function Services() {
                 <Search className="h-16 w-16 mx-auto" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                Нічого не знайдено
+                Ingenting funnet
               </h3>
               <p className="text-gray-600">
-                Спробуйте змінити умови пошуку або фільтри.
+                Prøv å endre søkekriteriene eller filtrene.
               </p>
             </div>
           )}
@@ -284,7 +282,7 @@ export default function Services() {
 
       <Footer />
 
-      {/* Master Profile Modal */}
+      {/* Modal for håndverkerprofil */}
       {selectedMasterId && (
         <MasterProfileModal
           isOpen={modalOpen}
@@ -294,7 +292,7 @@ export default function Services() {
         />
       )}
 
-      {/* Booking Modal */}
+      {/* Booking-modal */}
       {bookingMasterId && (
         <BookingModal
           isOpen={bookingModalOpen}

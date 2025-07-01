@@ -1,10 +1,21 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { CalendarCheck } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -18,11 +29,11 @@ interface BookingModalProps {
 }
 
 export function BookingModal({ isOpen, onClose, masterId }: BookingModalProps) {
-useEffect(() => {
-  console.log("BookingModal masterId:", masterId);
-  console.log("BookingModal isOpen:", isOpen);
-}, [masterId, isOpen]);
-  
+  useEffect(() => {
+    console.log("BookingModal masterId:", masterId);
+    console.log("BookingModal isOpen:", isOpen);
+  }, [masterId, isOpen]);
+
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -43,7 +54,8 @@ useEffect(() => {
 
   const { data: master } = useQuery<MasterWithUser>({
     queryKey: ["/api/masters", masterId],
-    queryFn: () => apiRequest("GET", `/api/masters/${masterId}`).then((res) => res.json()),
+    queryFn: () =>
+      apiRequest("GET", `/api/masters/${masterId}`).then((res) => res.json()),
     enabled: !!masterId && isOpen,
   });
 
@@ -51,15 +63,15 @@ useEffect(() => {
     mutationFn: async (data: BookingFormData) => {
       const response = await apiRequest("POST", "/api/bookings", {
         ...data,
-        clientId: 1, // TODO: Replace with authenticated user
+        clientId: 1, // TODO: Erstatt med autentisert bruker
         estimatedPrice: master?.hourlyRate || "300",
       });
       return response.json();
     },
     onSuccess: () => {
       toast({
-        title: "Заявку відправлено!",
-        description: "Майстер зв'яжеться з вами найближчим часом.",
+        title: "Forespørsel sendt!",
+        description: "Mesteren vil kontakte deg så snart som mulig.",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/bookings"] });
       onClose();
@@ -76,8 +88,8 @@ useEffect(() => {
     },
     onError: () => {
       toast({
-        title: "Помилка",
-        description: "Не вдалося відправити заявку. Спробуйте ще раз.",
+        title: "Feil",
+        description: "Kunne ikke sende forespørselen. Vennligst prøv igjen.",
         variant: "destructive",
       });
     },
@@ -100,8 +112,16 @@ useEffect(() => {
     };
 
   const timeSlots = [
-    "09:00", "10:00", "11:00", "12:00", "13:00",
-    "14:00", "15:00", "16:00", "17:00", "18:00"
+    "09:00",
+    "10:00",
+    "11:00",
+    "12:00",
+    "13:00",
+    "14:00",
+    "15:00",
+    "16:00",
+    "17:00",
+    "18:00",
   ];
 
   return (
@@ -113,8 +133,12 @@ useEffect(() => {
               <CalendarCheck className="h-8 w-8 text-white" />
             </div>
             <div>
-              <DialogTitle className="text-2xl font-bold text-gray-900">Замовити послугу</DialogTitle>
-              <p className="text-gray-600 mt-2">Заповніть форму для зв'язку з майстром</p>
+              <DialogTitle className="text-2xl font-bold text-gray-900">
+                Bestill tjeneste
+              </DialogTitle>
+              <p className="text-gray-600 mt-2">
+                Fyll ut skjemaet for å kontakte mesteren
+              </p>
             </div>
           </div>
         </DialogHeader>
@@ -122,17 +146,26 @@ useEffect(() => {
         {master && (
           <div className="bg-gray-50 rounded-lg p-4 mb-6">
             <h4 className="font-semibold text-gray-900 mb-2">
-              {master.user ? `${master.user.firstName} ${master.user.lastName}` : "Завантаження..."}
+              {master.user
+                ? `${master.user.firstName} ${master.user.lastName}`
+                : "Laster..."}
             </h4>
-            <p className="text-sm text-gray-600 mb-2">{master.specialization}</p>
-            <p className="text-lg font-bold text-primary">від {master.hourlyRate} грн</p>
+            <p className="text-sm text-gray-600 mb-2">
+              {master.specialization}
+            </p>
+            <p className="text-lg font-bold text-primary">
+              fra {master.hourlyRate} kr
+            </p>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <Label htmlFor="clientName" className="block text-sm font-medium text-gray-700 mb-2">
-              Ваше ім'я
+            <Label
+              htmlFor="clientName"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Ditt navn
             </Label>
             <Input
               id="clientName"
@@ -140,13 +173,16 @@ useEffect(() => {
               required
               value={formData.clientName}
               onChange={handleChange("clientName")}
-              placeholder="Як до вас звертатися"
+              placeholder="Hva skal vi kalle deg?"
             />
           </div>
 
           <div>
-            <Label htmlFor="clientPhone" className="block text-sm font-medium text-gray-700 mb-2">
-              Телефон
+            <Label
+              htmlFor="clientPhone"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Telefon
             </Label>
             <Input
               id="clientPhone"
@@ -154,13 +190,16 @@ useEffect(() => {
               required
               value={formData.clientPhone}
               onChange={handleChange("clientPhone")}
-              placeholder="+380 (67) 123-45-67"
+              placeholder="+47 123 45 678"
             />
           </div>
 
           <div>
-            <Label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
-              Адреса
+            <Label
+              htmlFor="address"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Adresse
             </Label>
             <Input
               id="address"
@@ -168,14 +207,17 @@ useEffect(() => {
               required
               value={formData.address}
               onChange={handleChange("address")}
-              placeholder="Куди приїхати майстру"
+              placeholder="Hvor skal mesteren komme?"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="scheduledDate" className="block text-sm font-medium text-gray-700 mb-2">
-                Дата
+              <Label
+                htmlFor="scheduledDate"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Dato
               </Label>
               <Input
                 id="scheduledDate"
@@ -183,19 +225,21 @@ useEffect(() => {
                 required
                 value={formData.scheduledDate}
                 onChange={handleChange("scheduledDate")}
-                min={new Date().toISOString().split('T')[0]}
+                min={new Date().toISOString().split("T")[0]}
               />
             </div>
             <div>
               <Label className="block text-sm font-medium text-gray-700 mb-2">
-                Час
+                Tid
               </Label>
               <Select
                 value={formData.scheduledTime}
-                onValueChange={(value) => setFormData((prev) => ({ ...prev, scheduledTime: value }))}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, scheduledTime: value }))
+                }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Оберіть час" />
+                  <SelectValue placeholder="Velg tid" />
                 </SelectTrigger>
                 <SelectContent>
                   {timeSlots.map((time) => (
@@ -209,8 +253,11 @@ useEffect(() => {
           </div>
 
           <div>
-            <Label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-              Опис проблеми
+            <Label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Beskrivelse av problemet
             </Label>
             <Textarea
               id="description"
@@ -218,18 +265,20 @@ useEffect(() => {
               rows={4}
               value={formData.description}
               onChange={handleChange("description")}
-              placeholder="Детально опишіть що потрібно зробити..."
+              placeholder="Beskriv detaljert hva som må gjøres..."
               className="resize-none"
             />
           </div>
 
           <div className="bg-gray-50 rounded-lg p-4">
-            <h4 className="font-semibold text-gray-900 mb-2">Орієнтовна вартість</h4>
+            <h4 className="font-semibold text-gray-900 mb-2">
+              Omtrentlig pris
+            </h4>
             <p className="text-2xl font-bold text-primary">
-              від {master?.hourlyRate || "300"} грн
+              fra {master?.hourlyRate || "300"} kr
             </p>
             <p className="text-sm text-gray-600 mt-1">
-              Точна вартість буде уточнена майстром
+              Den nøyaktige prisen vil mesteren bekrefte
             </p>
           </div>
 
@@ -238,13 +287,15 @@ useEffect(() => {
             disabled={bookingMutation.status === "pending"}
             className="w-full bg-primary text-white hover:bg-primary/90 font-semibold"
           >
-            {bookingMutation.status === "pending" ? "Відправляємо..." : "Відправити заявку"}
+            {bookingMutation.status === "pending"
+              ? "Sender..."
+              : "Send forespørsel"}
           </Button>
         </form>
 
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-500">
-            Майстер зв'яжеться з вами протягом 15 хвилин для уточнення деталей
+            Mesteren kontakter deg innen 15 minutter for å bekrefte detaljene
           </p>
         </div>
       </DialogContent>

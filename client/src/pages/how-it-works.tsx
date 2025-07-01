@@ -4,78 +4,75 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Search, UserCheck, Calendar, CheckCircle, Star, Shield, Clock } from "lucide-react";
-
 export default function HowItWorks() {
   const steps = [
     {
       number: "01",
       icon: Search,
-      title: "Оберіть послугу",
-      description: "Знайдіть потрібного спеціаліста серед більш ніж 50 категорій послуг або скористайтеся пошуком",
-      details: ["Пошук за категорією", "Фільтри за містом", "Перегляд рейтингів"]
+      title: "Velg tjeneste",
+      description: "Finn riktig spesialist blant mer enn 50 tjenestekategorier, eller bruk søkefunksjonen",
+      details: ["Søk etter kategori", "Filtrer etter by", "Se vurderinger"]
     },
     {
       number: "02", 
       icon: UserCheck,
-      title: "Виберіть майстра",
-      description: "Переглядайте профілі майстрів, читайте відгуки та обирайте найкращого для ваших потреб",
-      details: ["Портфоліо робіт", "Відгуки клієнтів", "Ціни на послуги"]
+      title: "Velg håndverker",
+      description: "Se håndverkerprofiler, les anmeldelser og velg den beste for dine behov",
+      details: ["Arbeidsportefølje", "Kundeanmeldelser", "Priser på tjenester"]
     },
     {
       number: "03",
       icon: Calendar,
-      title: "Забронюйте час",
-      description: "Оберіть зручний час та дату, опишіть деталі роботи та підтвердіть замовлення",
-      details: ["Онлайн календар", "Опис завдання", "Підтвердження майстра"]
+      title: "Bestill tid",
+      description: "Velg en passende tid og dato, beskriv arbeidsoppgaven, og bekreft bestillingen",
+      details: ["Online kalender", "Oppgavebeskrivelse", "Bekreftelse fra håndverker"]
     },
     {
       number: "04",
       icon: CheckCircle,
-      title: "Отримайте результат",
-      description: "Майстер виконає роботу якісно та в строк. Оплачуйте після завершення",
-      details: ["Якісне виконання", "Оплата після роботи", "Гарантія на послуги"]
+      title: "Få resultatet",
+      description: "Håndverkeren utfører jobben med kvalitet og til avtalt tid. Betal etter fullført arbeid",
+      details: ["Kvalitetsutførelse", "Betaling etter arbeid", "Garanti på tjenester"]
     }
   ];
 
   const benefits = [
     {
       icon: Shield,
-      title: "Безпека",
-      description: "Всі майстри перевірені, застраховані та мають необхідні документи"
+      title: "Sikkerhet",
+      description: "Alle håndverkere er verifisert, forsikret og har nødvendige dokumenter"
     },
     {
       icon: Star,
-      title: "Якість",
-      description: "Система рейтингів та відгуків гарантує високу якість послуг"
+      title: "Kvalitet",
+      description: "Systemet med vurderinger og anmeldelser sikrer høy kvalitet på tjenestene"
     },
     {
       icon: Clock,
-      title: "Швидкість",
-      description: "Знаходьте майстра за лічені хвилини у будь-який час доби"
+      title: "Raskt",
+      description: "Finn håndverker på få minutter, når som helst på døgnet"
     }
-  ];
 
+  ];
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header 
-        onOpenLogin={() => {}}
-        onOpenRegister={() => {}}
-      />
-      
+      <Header onOpenLogin={() => {}} onOpenRegister={() => {}} />
+
       <main className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Hero Section */}
           <div className="text-center mb-16">
             <Badge variant="secondary" className="mb-4">
-              Як це працює
+              Hvordan det fungerer
             </Badge>
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Знайти майстра просто як <br />
-              <span className="text-primary">рахувати до чотирьох</span>
+              Å finne en håndverker er like enkelt som
+              <br />
+              <span className="text-primary">å telle til fire</span>
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Наша платформа робить пошук та замовлення послуг майстрів максимально 
-              простим та зручним. Чотири кроки до результату.
+              N vår plattform gjør søk og bestilling av håndverkertjenester
+              maksimalt enkelt og praktisk. Fire steg til resultatet.
             </p>
           </div>
 
@@ -104,12 +101,13 @@ export default function HowItWorks() {
                         <h3 className="text-xl font-semibold text-gray-900 mb-3">
                           {step.title}
                         </h3>
-                        <p className="text-gray-600 mb-4">
-                          {step.description}
-                        </p>
+                        <p className="text-gray-600 mb-4">{step.description}</p>
                         <ul className="text-sm text-gray-500 space-y-1">
                           {step.details.map((detail, idx) => (
-                            <li key={idx} className="flex items-center justify-center">
+                            <li
+                              key={idx}
+                              className="flex items-center justify-center"
+                            >
                               <CheckCircle className="h-3 w-3 text-green-500 mr-1" />
                               {detail}
                             </li>
@@ -127,10 +125,10 @@ export default function HowItWorks() {
           <div className="mb-16">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Чому обирають Master-House
+                Hvorfor velge Master-House
               </h2>
               <p className="text-xl text-gray-600">
-                Переваги, які роблять нас найкращими
+                Fordeler som gjør oss til de beste
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -143,9 +141,7 @@ export default function HowItWorks() {
                       <h3 className="text-xl font-semibold text-gray-900 mb-3">
                         {benefit.title}
                       </h3>
-                      <p className="text-gray-600">
-                        {benefit.description}
-                      </p>
+                      <p className="text-gray-600">{benefit.description}</p>
                     </CardContent>
                   </Card>
                 );
@@ -157,51 +153,54 @@ export default function HowItWorks() {
           <div className="mb-16">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Часті питання
+                Ofte stilte spørsmål
               </h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <Card>
                 <CardContent className="p-6">
                   <h3 className="font-semibold text-gray-900 mb-2">
-                    Як відбувається оплата?
+                    Hvordan foregår betalingen?
                   </h3>
                   <p className="text-gray-600">
-                    Оплата здійснюється після завершення робіт безпосередньо майстру 
-                    або через платформу. Ви можете обрати зручний спосіб оплати.
+                    Betaling skjer etter fullført arbeid, enten direkte til
+                    håndverkeren eller via plattformen. Du kan velge
+                    betalingsmåte som passer deg .
                   </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-6">
                   <h3 className="font-semibold text-gray-900 mb-2">
-                    Що робити, якщо результат не задовольняє?
+                    Hva gjør jeg hvis resultatet ikke er tilfredsstillende?
                   </h3>
                   <p className="text-gray-600">
-                    Всі роботи виконуються з гарантією. У разі незадоволення результатом, 
-                    зверніться до служби підтримки - ми допоможемо вирішити питання.
+                    Alle arbeider utføres med garanti. Hvis du er misfornøyd med
+                    resultatet, vennligst kontakt kundeservice - vi vil hjelpe
+                    deg med å løse problemet.
                   </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-6">
                   <h3 className="font-semibold text-gray-900 mb-2">
-                    Як швидко можна знайти майстра?
+                    Hvor raskt kan jeg finne en håndverker?
                   </h3>
                   <p className="text-gray-600">
-                    Зазвичай майстра можна знайти за 15-30 хвилин. У випадку термінових 
-                    робіт доступна функція "термінового виклику".
+                    Vanligvis kan du finne en håndverker innen 15-30 minutter. I
+                    tilfelle av akutte oppdrag er det tilgjengelig en funksjon
+                    for "akuttanrop".
                   </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-6">
                   <h3 className="font-semibold text-gray-900 mb-2">
-                    Чи можна змінити час замовлення?
+                    Kan jeg endre tidspunkt for bestillingen?
                   </h3>
                   <p className="text-gray-600">
-                    Так, ви можете перенести замовлення, зв'язавшись з майстром 
-                    або через особистий кабінет на платформі.
+                    Ja, du kan flytte bestillingen ved å kontakte håndverkeren
+                    eller via din personlige konto på plattformen.
                   </p>
                 </CardContent>
               </Card>
@@ -212,18 +211,20 @@ export default function HowItWorks() {
           <div className="text-center">
             <Card className="bg-gradient-to-r from-primary to-blue-600">
               <CardContent className="p-12 text-white">
-                <h2 className="text-3xl font-bold mb-4">
-                  Готові спробувати?
-                </h2>
+                <h2 className="text-3xl font-bold mb-4">Klar til å prøve?</h2>
                 <p className="text-xl mb-8 opacity-90">
-                  Приєднуйтесь до тисяч задоволених клієнтів Master-House
+                  Bli med blant tusenvis av fornøyde kunder hos Master-House
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button size="lg" variant="secondary">
-                    Знайти майстра
+                    Finn en håndverker
                   </Button>
-                  <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-primary">
-                    Стати майстром
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="text-white border-white hover:bg-white hover:text-primary"
+                  >
+                    Bli håndverker
                   </Button>
                 </div>
               </CardContent>
@@ -231,7 +232,7 @@ export default function HowItWorks() {
           </div>
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );

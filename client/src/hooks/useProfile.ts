@@ -11,7 +11,7 @@ export function useProfile() {
     setLoading(true);
     fetchProfile()
       .then((data) => setProfile(data))
-      .catch(() => setError("Не вдалось завантажити профіль"))
+      .catch(() => setError("Kunne ikke laste profil"))
       .finally(() => setLoading(false));
   }, []);
 
@@ -23,7 +23,7 @@ export function useProfile() {
       setProfile(updated);
       return true;
     } catch {
-      setError("Не вдалось зберегти профіль");
+      setError("Kunne ikke lagre profil");
       return false;
     } finally {
       setSaving(false);

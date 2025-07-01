@@ -1,5 +1,13 @@
 import { Link } from "wouter";
-import { Home, Phone, Mail, MapPin, Facebook, Instagram, Send } from "lucide-react";
+import {
+  Home,
+  Phone,
+  Mail,
+  MapPin,
+  Facebook,
+  Instagram,
+  Send,
+} from "lucide-react";
 
 export function Footer() {
   return (
@@ -14,104 +22,134 @@ export function Footer() {
               <span className="text-2xl font-bold">Master-House</span>
             </div>
             <p className="text-gray-400 mb-6">
-              Професійні послуги у вашому місті. Знайдіть кваліфікованих майстрів швидко та надійно.
+              Profesjonelle tjenester i din by. Finn kvalifiserte håndverkere
+              raskt og pålitelig.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a
+                href="#"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 <Facebook className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a
+                href="#"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 <Instagram className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a
+                href="#"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 <Send className="h-5 w-5" />
               </a>
             </div>
           </div>
 
           <div>
-            <h4 className="text-lg font-semibold mb-6">Послуги</h4>
+            <h4 className="text-lg font-semibold mb-6">Tjenester</h4>
             <ul className="space-y-3 text-gray-400">
               <li>
                 <Link href="/services/plumbing">
-                  <span className="hover:text-white transition-colors">Сантехніка</span>
+                  <span className="hover:text-white transition-colors">
+                    VVS
+                  </span>
                 </Link>
               </li>
               <li>
                 <Link href="/services/electrical">
-                  <span className="hover:text-white transition-colors">Електрика</span>
+                  <span className="hover:text-white transition-colors">
+                    Elektriker
+                  </span>
                 </Link>
               </li>
               <li>
                 <Link href="/services/cleaning">
-                  <span className="hover:text-white transition-colors">Прибирання</span>
+                  <span className="hover:text-white transition-colors">
+                    Rengjøring
+                  </span>
                 </Link>
               </li>
               <li>
                 <Link href="/services/renovation">
-                  <span className="hover:text-white transition-colors">Ремонт</span>
+                  <span className="hover:text-white transition-colors">
+                    Reparasjon
+                  </span>
                 </Link>
               </li>
               <li>
                 <Link href="/services/appliances">
-                  <span className="hover:text-white transition-colors">Побутова техніка</span>
+                  <span className="hover:text-white transition-colors">
+                    Hvitevarer
+                  </span>
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h4 className="text-lg font-semibold mb-6">Компанія</h4>
+            <h4 className="text-lg font-semibold mb-6">Firma</h4>
             <ul className="space-y-3 text-gray-400">
               <li>
                 <Link href="/about">
-                  <span className="hover:text-white transition-colors">Про нас</span>
+                  <span className="hover:text-white transition-colors">
+                    Om oss
+                  </span>
                 </Link>
               </li>
               <li>
                 <Link href="/how-it-works">
-                  <span className="hover:text-white transition-colors">Як це працює</span>
+                  <span className="hover:text-white transition-colors">
+                    Hvordan det fungerer
+                  </span>
                 </Link>
               </li>
               <li>
                 <Link href="/become-master">
-                  <span className="hover:text-white transition-colors">Стати майстром</span>
+                  <span className="hover:text-white transition-colors">
+                    Bli håndverker
+                  </span>
                 </Link>
               </li>
               <li>
                 <Link href="/support">
-                  <span className="hover:text-white transition-colors">Підтримка</span>
+                  <span className="hover:text-white transition-colors">
+                    Kundeservice
+                  </span>
                 </Link>
               </li>
               <li>
                 <Link href="/blog">
-                  <span className="hover:text-white transition-colors">Блог</span>
+                  <span className="hover:text-white transition-colors">
+                    Blogg
+                  </span>
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h4 className="text-lg font-semibold mb-6">Контакти</h4>
+            <h4 className="text-lg font-semibold mb-6">Kontakt</h4>
             <ul className="space-y-3 text-gray-400">
               <li className="flex items-center">
                 <Phone className="h-4 w-4 mr-3" />
-                <span>+380 (67) 123-45-67</span>
+                <span>+47 67 123 45 67</span>
               </li>
               <li className="flex items-center">
                 <Mail className="h-4 w-4 mr-3" />
-                <span>info@master-house.ua</span>
+                <span>info@master-house.no</span>
               </li>
               <li className="flex items-start">
                 <MapPin className="h-4 w-4 mr-3 mt-1" />
-                <span>м. Київ, вул. Хрещатик 1</span>
+                <span>Oslo, Karl Johans gate 1</span>
               </li>
             </ul>
           </div>
         </div>
 
         <div className="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400">
-          <p>&copy; 2024 Master-House. Всі права захищені.</p>
+          <p>&copy;2024 Master-House. Alle rettigheter reservert.</p>
         </div>
       </div>
     </footer>

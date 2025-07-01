@@ -98,9 +98,9 @@ export function RegisterModal({
               </div>
               <div>
                 <DialogTitle className="text-2xl font-bold text-gray-900">
-                  Реєстрація
+                  Registrering
                 </DialogTitle>
-                <p className="text-gray-600 mt-2">Створіть свій акаунт</p>
+                <p className="text-gray-600 mt-2">Opprett din konto</p>
               </div>
             </div>
           </div>
@@ -113,7 +113,7 @@ export function RegisterModal({
                 htmlFor="firstName"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Ім'я
+                Fornavn
               </Label>
               <Input
                 id="firstName"
@@ -121,7 +121,7 @@ export function RegisterModal({
                 required
                 value={formData.firstName}
                 onChange={handleChange("firstName")}
-                placeholder="Ваше ім'я"
+                placeholder="Ditt fornavn"
               />
             </div>
             <div>
@@ -129,7 +129,7 @@ export function RegisterModal({
                 htmlFor="lastName"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Прізвище
+                Etternavn
               </Label>
               <Input
                 id="lastName"
@@ -137,7 +137,7 @@ export function RegisterModal({
                 required
                 value={formData.lastName}
                 onChange={handleChange("lastName")}
-                placeholder="Прізвище"
+                placeholder="Etternavn"
               />
             </div>
           </div>
@@ -147,7 +147,7 @@ export function RegisterModal({
               htmlFor="username"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Ім'я користувача
+              Brukernavn
             </Label>
             <Input
               id="username"
@@ -155,7 +155,7 @@ export function RegisterModal({
               required
               value={formData.username}
               onChange={handleChange("username")}
-              placeholder="username"
+              placeholder="brukernavn"
             />
           </div>
 
@@ -164,7 +164,7 @@ export function RegisterModal({
               htmlFor="email"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Email
+              E-post
             </Label>
             <Input
               id="email"
@@ -172,7 +172,7 @@ export function RegisterModal({
               required
               value={formData.email}
               onChange={handleChange("email")}
-              placeholder="your@email.com"
+              placeholder="din@email.com"
             />
           </div>
 
@@ -181,14 +181,14 @@ export function RegisterModal({
               htmlFor="phone"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Телефон
+              Telefon
             </Label>
             <Input
               id="phone"
               type="tel"
               value={formData.phone}
               onChange={handleChange("phone")}
-              placeholder="+380 (67) 123-45-67"
+              placeholder="+47 123 45 678"
             />
           </div>
 
@@ -197,7 +197,7 @@ export function RegisterModal({
               htmlFor="password"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Пароль
+              Passord
             </Label>
             <Input
               id="password"
@@ -214,7 +214,7 @@ export function RegisterModal({
               htmlFor="confirmPassword"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Підтвердіть пароль
+              Bekreft passord
             </Label>
             <Input
               id="confirmPassword"
@@ -228,7 +228,7 @@ export function RegisterModal({
 
           <div>
             <Label className="block text-sm font-medium text-gray-700 mb-2">
-              Тип акаунту
+              Konto type
             </Label>
             <Select
               value={formData.userType}
@@ -237,12 +237,12 @@ export function RegisterModal({
               }
             >
               <SelectTrigger>
-                <SelectValue placeholder="Оберіть тип акаунту" />
+                <SelectValue placeholder="Velg konto type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="client">Клієнт (знайти майстра)</SelectItem>
+                <SelectItem value="client">Kunde (finne håndverker)</SelectItem>
                 <SelectItem value="master">
-                  Майстер (надавати послуги)
+                  Håndverker (tilby tjenester)
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -255,14 +255,14 @@ export function RegisterModal({
                   htmlFor="category"
                   className="block text-sm font-medium text-gray-700 mb-2"
                 >
-                  Категорія робіт
+                  Arbeidskategori
                 </Label>
                 <Input
                   id="category"
                   type="text"
                   value={formData.category || ""}
                   onChange={handleChange("category")}
-                  placeholder="Наприклад: Сантехнік"
+                  placeholder="For eksempel: Rørlegger"
                 />
               </div>
 
@@ -271,14 +271,14 @@ export function RegisterModal({
                   htmlFor="experience"
                   className="block text-sm font-medium text-gray-700 mb-2"
                 >
-                  Досвід (роки)
+                  Erfaring (år)
                 </Label>
                 <Input
                   id="experience"
                   type="text"
                   value={formData.experience || ""}
                   onChange={handleChange("experience")}
-                  placeholder="Наприклад: 5 років"
+                  placeholder="For eksempel: 5 år"
                 />
               </div>
 
@@ -287,7 +287,7 @@ export function RegisterModal({
                   htmlFor="completedJobs"
                   className="block text-sm font-medium text-gray-700 mb-2"
                 >
-                  Виконаних робіт
+                  Fullførte oppdrag
                 </Label>
                 <Input
                   id="completedJobs"
@@ -309,14 +309,14 @@ export function RegisterModal({
                   htmlFor="bio"
                   className="block text-sm font-medium text-gray-700 mb-2"
                 >
-                  Про себе
+                  Om meg
                 </Label>
                 <Input
                   id="bio"
                   type="text"
                   value={formData.bio || ""}
                   onChange={handleChange("bio")}
-                  placeholder="Коротко розкажіть про себе"
+                  placeholder="Fortell kort om deg selv"
                 />
               </div>
             </>
@@ -334,19 +334,19 @@ export function RegisterModal({
               htmlFor="terms"
               className="text-sm text-gray-600 leading-relaxed"
             >
-              Я погоджуюся з{" "}
+              Jeg godtar{" "}
               <Button
                 variant="link"
                 className="text-primary hover:text-primary/80 p-0 h-auto"
               >
-                умовами користування
+                bruksvilkårene
               </Button>{" "}
-              та{" "}
+              og{" "}
               <Button
                 variant="link"
                 className="text-primary hover:text-primary/80 p-0 h-auto"
               >
-                політикою конфіденційності
+                personvernreglene
               </Button>
             </Label>
           </div>
@@ -356,19 +356,19 @@ export function RegisterModal({
             disabled={isLoading || !acceptedTerms}
             className="w-full bg-primary text-white hover:bg-primary/90 font-semibold"
           >
-            {isLoading ? "Реєструємо..." : "Зареєструватися"}
+            {isLoading ? "Registrerer..." : "Registrer"}
           </Button>
         </form>
 
         <div className="mt-6 text-center">
           <p className="text-gray-600">
-            Вже маєте акаунт?{" "}
+            Har du allerede en konto?{" "}
             <Button
               variant="link"
               onClick={onSwitchToLogin}
               className="text-primary hover:text-primary/80 font-medium p-0"
             >
-              Увійти
+              Logg inn
             </Button>
           </p>
         </div>

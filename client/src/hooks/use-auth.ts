@@ -8,7 +8,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error("useAuth må brukes innenfor en AuthProvider");
   }
   return context;
 }
@@ -30,13 +30,13 @@ export function useAuthProvider(): AuthContextType {
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", token);
       toast({
-        title: "Успішний вхід",
-        description: `Ласкаво просимо, ${user.firstName}!`,
+        title: "Velkommen",
+        description: `Velkommen, ${user.firstName}!`,
       });
     } catch (error) {
       toast({
-        title: "Помилка входу",
-        description: "Невірний email або пароль",
+        title: "Innlogging feilet",
+        description: "Ugyldig e-post eller passord",
         variant: "destructive",
       });
       throw error;
@@ -49,7 +49,7 @@ export function useAuthProvider(): AuthContextType {
     setIsLoading(true);
     try {
       if (data.password !== data.confirmPassword) {
-        throw new Error("Паролі не співпадають");
+        throw new Error("Passordene matcher ikke");
       }
 
       const { confirmPassword, ...registerData } = data;
@@ -59,13 +59,13 @@ export function useAuthProvider(): AuthContextType {
       localStorage.setItem("token", token);
       setUser(user);
       toast({
-        title: "Реєстрація успішна",
-        description: `Ласкаво просимо, ${user.firstName}!`,
+        title: "Registrering vellykket",
+        description: `Velkommen, ${user.firstName}!`,
       });
     } catch (error) {
       toast({
-        title: "Помилка реєстрації",
-        description: error instanceof Error ? error.message : "Щось пішло не так",
+        title: "Registrering feilet",
+        description: error instanceof Error ? error.message : "Noe gikk galt",
         variant: "destructive",
       });
       throw error;
@@ -79,12 +79,12 @@ export function useAuthProvider(): AuthContextType {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     toast({
-      title: "Ви вийшли",
-      description: "До побачення!",
+      title: "Du har logget ut",
+      description: "Ha det bra!",
     });
   };
 
-  // Load user from localStorage on app start
+  // Last inn bruker fra localStorage når appen starter
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {

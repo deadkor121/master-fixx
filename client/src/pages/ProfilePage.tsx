@@ -38,7 +38,7 @@ const ProfilePage: React.FC = () => {
           },
         });
         if (!response.ok) {
-          throw new Error("Не вдалося завантажити профіль");
+          throw new Error("Kunne ikke laste inn profilen");
         }
         const data = await response.json();
 
@@ -54,7 +54,7 @@ const ProfilePage: React.FC = () => {
           about: data.about ?? "",
         });
       } catch (err: any) {
-        setError(err.message || "Помилка завантаження профілю");
+        setError(err.message || "Feil ved lasting av profil");
       } finally {
         setLoading(false);
       }
@@ -69,7 +69,7 @@ const ProfilePage: React.FC = () => {
     setSaveSuccess(false);
 
     if (updatedProfile.about && updatedProfile.about.length < 230) {
-      setSaveError('"Про себе" має містити мінімум 230 символів');
+      setSaveError('"Om meg" må inneholde minst 230 tegn');
       setSaving(false);
       return;
     }
@@ -86,7 +86,7 @@ const ProfilePage: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Не вдалося зберегти профіль");
+        throw new Error("Kunne ikke lagre profilen");
       }
 
       const data = await response.json();
@@ -104,7 +104,7 @@ const ProfilePage: React.FC = () => {
 
       setSaveSuccess(true);
     } catch (err: any) {
-      setSaveError(err.message || "Помилка збереження профілю");
+      setSaveError(err.message || "Feil ved lagring av profil");
     } finally {
       setSaving(false);
     }
@@ -115,7 +115,7 @@ const ProfilePage: React.FC = () => {
       <Header onOpenLogin={switchToLogin} onOpenRegister={switchToRegister} />
 
       <div className="container mx-auto py-6">
-        <h1 className="text-2xl font-semibold mb-4">Профіль</h1>
+        <h1 className="text-2xl font-semibold mb-4">Profil</h1>
 
         {loading && (
           <div className="flex justify-center items-center h-40">

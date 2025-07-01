@@ -110,7 +110,8 @@ async function testConnection() {
 (async () => {
   await testConnection();
 
-  const server = await registerRoutes(app);
+  // Регистрируем все маршруты
+  const serverApp = await registerRoutes(app);
 
   // Обработка ошибок
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -120,18 +121,18 @@ async function testConnection() {
     throw err;
   });
 
+  const port = Number(process.env.PORT) || 5000;
+
+  // Запускаем сервер и сохраняем объект server для передачи в setupVite
+  const server = app.listen(port, "0.0.0.0", () => {
+    log(`🚀 Server started on port ${port}`);
+  });
+
   // Vite - только для разработки
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
     serveStatic(app);
   }
-  const port = Number(process.env.PORT) || 5000;
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`🚀 Server started on port ${port}`);
-  });
+
 })();

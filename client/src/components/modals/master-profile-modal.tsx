@@ -18,7 +18,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import axios from "axios";
 import type { ReviewWithDetails, ServiceCategory, PublicUser } from "@/types";
 
-// 🔑 Правильный тип — твой собственный
 interface Service {
   name: string;
   description: string;
@@ -138,7 +137,7 @@ export function MasterProfileModal({
                     : "0.0"}
                 </span>
                 <span className="text-gray-600">
-                  ({master.reviewCount ?? 0} відгуків)
+                  ({master.reviewCount ?? 0} anmeldelser)
                 </span>
               </div>
               <div className="flex flex-wrap gap-2 justify-center md:justify-start mt-2">
@@ -146,23 +145,23 @@ export function MasterProfileModal({
                   variant="secondary"
                   className="bg-green-100 text-green-800"
                 >
-                  Перевірений майстер
+                  Verifisert håndverker
                 </Badge>
               </div>
             </div>
             <div className="text-center md:text-right">
               <p className="text-3xl font-bold mb-2">
-                від {master.hourlyRate} грн
+                fra {master.hourlyRate} kr
               </p>
               <Button onClick={handleBookingClick} className="mb-2">
-                Замовити послугу
+                Bestill tjeneste
               </Button>
               <div className="flex justify-center md:justify-end space-x-2">
-              <a href={`tel:${master.user.phone}`}>
-                <Button variant="outline" size="icon">
-                  <Phone className="h-4 w-4" />
+                <a href={`tel:${master.user.phone}`}>
+                  <Button variant="outline" size="icon">
+                    <Phone className="h-4 w-4" />
                   </Button>
-              </a>
+                </a>
                 <Button variant="outline" size="icon">
                   <MessageCircle className="h-4 w-4" />
                 </Button>
@@ -173,25 +172,27 @@ export function MasterProfileModal({
           {/* Tabs */}
           <Tabs defaultValue="overview">
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="overview">Огляд</TabsTrigger>
-              <TabsTrigger value="services">Послуги та ціни</TabsTrigger>
-              <TabsTrigger value="reviews">Відгуки</TabsTrigger>
+              <TabsTrigger value="overview">Oversikt</TabsTrigger>
+              <TabsTrigger value="services">Tjenester og priser</TabsTrigger>
+              <TabsTrigger value="reviews">Anmeldelser</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="mt-6">
               <p className="mb-2">
-                <b>Про себе:</b> {master.user.about || "—"}
+                <b>Om meg:</b> {master.user.about || "—"}
               </p>
               <p className="mb-2">
-                <b>Місто:</b> {master.user.city || "—"}
+                <b>By:</b> {master.user.city || "—"}
               </p>
               <p className="mb-2">
-                <b>Дата народження:</b> {master.user.birthDate || "—"}
+                <b>Fødselsdato:</b> {master.user.birthDate || "—"}
               </p>
             </TabsContent>
 
             <TabsContent value="services" className="mt-6">
-              <h3 className="text-xl font-semibold mb-4">Послуги та ціни</h3>
+              <h3 className="text-xl font-semibold mb-4">
+                Tjenester og priser
+              </h3>
               {services.length > 0 ? (
                 services.map((service, idx) => (
                   <Card key={idx} className="mb-2">
@@ -203,18 +204,18 @@ export function MasterProfileModal({
                         </div>
                       </div>
                       <div className="text-primary font-semibold">
-                        від {service.price} грн
+                        fra {service.price} kr
                       </div>
                     </CardContent>
                   </Card>
                 ))
               ) : (
-                <p className="text-gray-600">Немає послуг у цього майстра.</p>
+                <p className="text-gray-600">Ingen tjenester tilgjengelig.</p>
               )}
             </TabsContent>
 
             <TabsContent value="reviews" className="mt-6">
-              <h3 className="text-xl font-semibold mb-4">Відгуки клієнтів</h3>
+              <h3 className="text-xl font-semibold mb-4">Kundeanmeldelser</h3>
               {reviews && reviews.length > 0 ? (
                 reviews.map((review, idx) => (
                   <Card key={idx} className="mb-2">
@@ -237,7 +238,7 @@ export function MasterProfileModal({
                   </Card>
                 ))
               ) : (
-                <p className="text-gray-600">Немає відгуків поки що.</p>
+                <p className="text-gray-600">Ingen anmeldelser ennå.</p>
               )}
             </TabsContent>
           </Tabs>

@@ -44,17 +44,16 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
   const [formError, setFormError] = useState<string | null>(null);
 
   const validate = (): boolean => {
-    if (!firstName.trim()) return setFormError("Ім’я обов’язкове"), false;
-    if (!lastName.trim()) return setFormError("Прізвище обов’язкове"), false;
-    if (!city.trim()) return setFormError("Місто обов’язкове"), false;
-    if (!birthDate.trim())
-      return setFormError("Дата народження обов’язкова"), false;
-    if (!gender) return setFormError("Стать обов’язкова"), false;
+    if (!firstName.trim()) return setFormError("Fornavn er påkrevd"), false;
+    if (!lastName.trim()) return setFormError("Etternavn er påkrevd"), false;
+    if (!city.trim()) return setFormError("By er påkrevd"), false;
+    if (!birthDate.trim()) return setFormError("Fødselsdato er påkrevd"), false;
+    if (!gender) return setFormError("Kjønn er påkrevd"), false;
     if (!about.trim() || about.trim().length < 230)
-      return setFormError("«Про себе» має містити мінімум 230 символів"), false;
-    if (!role) return setFormError("Роль обов’язкова"), false;
+      return setFormError("«Om meg» må inneholde minst 230 tegn"), false;
+    if (!role) return setFormError("Rolle er påkrevd"), false;
     if (role === "master" && !category.trim())
-      return setFormError("Категорія обов’язкова для майстра"), false;
+      return setFormError("Kategori er påkrevd for håndverker"), false;
     setFormError(null);
     return true;
   };
@@ -73,7 +72,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       about,
       role,
       category: role === "master" ? category : undefined,
-      avatar, 
+      avatar,
     };
 
     await onSave(updatedProfile);
@@ -84,12 +83,11 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       onSubmit={handleSubmit}
       className="max-w-xl w-full mx-auto bg-white p-8 rounded-xl shadow-md border border-gray-200"
     >
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">
-        Редагування профілю
-      </h2>
-      {/* Аватар */}
+      <h2 className="text-2xl font-bold mb-6 text-gray-800">Rediger profil</h2>
+
+      {/* Avatar */}
       <div className="mb-5">
-        <label className="block mb-2 text-sm font-medium">Аватар</label>
+        <label className="block mb-2 text-sm font-medium">Avatar</label>
         <input
           type="file"
           accept="image/*"
@@ -108,15 +106,15 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         {avatar && (
           <img
             src={avatar}
-            alt="Аватар"
+            alt="Avatar"
             className="w-24 h-24 rounded-full mt-2 object-cover"
           />
         )}
       </div>
 
-      {/* Ім’я */}
+      {/* Fornavn */}
       <div className="mb-5">
-        <label className="block mb-2 text-sm font-medium">Ім’я</label>
+        <label className="block mb-2 text-sm font-medium">Fornavn</label>
         <input
           type="text"
           value={firstName}
@@ -125,9 +123,9 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         />
       </div>
 
-      {/* Прізвище */}
+      {/* Etternavn */}
       <div className="mb-5">
-        <label className="block mb-2 text-sm font-medium">Прізвище</label>
+        <label className="block mb-2 text-sm font-medium">Etternavn</label>
         <input
           type="text"
           value={lastName}
@@ -136,9 +134,9 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         />
       </div>
 
-      {/* По батькові */}
+      {/* Mellomnavn */}
       <div className="mb-5">
-        <label className="block mb-2 text-sm font-medium">По батькові</label>
+        <label className="block mb-2 text-sm font-medium">Mellomnavn</label>
         <input
           type="text"
           value={middleName}
@@ -147,9 +145,9 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         />
       </div>
 
-      {/* Місто */}
+      {/* By */}
       <div className="mb-5">
-        <label className="block mb-2 text-sm font-medium">Місто</label>
+        <label className="block mb-2 text-sm font-medium">By</label>
         <input
           type="text"
           value={city}
@@ -158,11 +156,9 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         />
       </div>
 
-      {/* Дата народження */}
+      {/* Fødselsdato */}
       <div className="mb-5">
-        <label className="block mb-2 text-sm font-medium">
-          Дата народження
-        </label>
+        <label className="block mb-2 text-sm font-medium">Fødselsdato</label>
         <input
           type="date"
           value={birthDate}
@@ -171,75 +167,75 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         />
       </div>
 
-      {/* Стать */}
+      {/* Kjønn */}
       <div className="mb-5">
-        <label className="block mb-2 text-sm font-medium">Стать</label>
+        <label className="block mb-2 text-sm font-medium">Kjønn</label>
         <select
           value={gender}
           onChange={(e) => setGender(e.target.value as "male" | "female")}
           className="w-full border px-4 py-2 rounded-md"
         >
-          <option value="">Оберіть стать</option>
-          <option value="male">Чоловіча</option>
-          <option value="female">Жіноча</option>
+          <option value="">Velg kjønn</option>
+          <option value="male">Mann</option>
+          <option value="female">Kvinne</option>
         </select>
       </div>
 
-      {/* Про себе */}
+      {/* Om meg */}
       <div className="mb-5">
-        <label className="block mb-2 text-sm font-medium">Про себе</label>
+        <label className="block mb-2 text-sm font-medium">Om meg</label>
         <textarea
           value={about}
           onChange={(e) => setAbout(e.target.value)}
-          placeholder="Опишіть свої послуги, досвід, інструменти, сильні сторони та хобі..."
+          placeholder="Beskriv dine tjenester, erfaring, verktøy, sterke sider og hobbyer..."
           rows={5}
           className="w-full border px-4 py-2 rounded-md"
         />
         <p className="text-sm text-gray-500">
-          Мінімум 230 символів. Залишилось:{" "}
+          Minst 230 tegn. Gjenstår:{" "}
           {230 - about.trim().length > 0 ? 230 - about.trim().length : 0}
         </p>
       </div>
 
-      {/* Роль */}
+      {/* Rolle */}
       <div className="mb-5">
-        <label className="block mb-2 text-sm font-medium">Роль</label>
+        <label className="block mb-2 text-sm font-medium">Rolle</label>
         <select
           value={role}
           onChange={(e) => setRole(e.target.value as "master" | "client")}
           className="w-full border px-4 py-2 rounded-md"
         >
-          <option value="client">Клієнт</option>
-          <option value="master">Майстер</option>
+          <option value="client">Klient</option>
+          <option value="master">Håndverker</option>
         </select>
       </div>
 
-      {/* Категорія */}
+      {/* Kategori */}
       {role === "master" && (
         <div className="mb-5">
-          <label className="block mb-2 text-sm font-medium">Категорія</label>
+          <label className="block mb-2 text-sm font-medium">Kategori</label>
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             className="w-full border px-4 py-2 rounded-md"
           >
-            <option value="">Оберіть категорію</option>
-            <option value="apartment_repair">Ремонт квартир</option>
-            <option value="electrician">Електрика</option>
-            <option value="plumbing">Сантехніка</option>
-            <option value="furniture_assembly">Збірка меблів</option>
-            <option value="cleaning">Прибирання</option>
-            <option value="construction">Будівельні роботи</option>
-            <option value="repair">Ремонт техніки</option>
-            <option value="moving">Вантажоперевезення</option>
-            <option value="other">Інше</option>
+            <option value="">Velg kategori</option>
+            <option value="apartment_repair">Leilighetsreparasjon</option>
+            <option value="electrician">Elektriker</option>
+            <option value="plumbing">Rørlegger</option>
+            <option value="furniture_assembly">Møbelmontering</option>
+            <option value="cleaning">Rengjøring</option>
+            <option value="construction">Byggearbeid</option>
+            <option value="repair">Teknisk reparasjon</option>
+            <option value="moving">Flytting</option>
+            <option value="other">Annet</option>
           </select>
         </div>
       )}
 
       {formError && <p className="text-red-600 mb-3">{formError}</p>}
-      {saveError && <p className="text-red-600 mb-3">Помилка: {saveError}</p>}
-      {saveSuccess && <p className="text-green-600 mb-3">Збережено успішно!</p>}
+      {saveError && <p className="text-red-600 mb-3">Feil: {saveError}</p>}
+      {saveSuccess && <p className="text-green-600 mb-3">Lagret!</p>}
 
       <button
         type="submit"
@@ -250,7 +246,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
             : "bg-blue-600 hover:bg-blue-700"
         }`}
       >
-        {saving ? "Збереження..." : "Зберегти"}
+        {saving ? "Lagrer..." : "Lagre"}
       </button>
     </form>
   );

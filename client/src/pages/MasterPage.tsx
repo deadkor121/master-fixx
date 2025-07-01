@@ -7,18 +7,21 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
-import { type MasterWithUser, insertUserSchema } from "@shared/schema";
+import { type MasterWithUser } from "@shared/schema";
 import { Header } from "@/components/header";
 import { Badge } from "@/components/ui/badge";
 import { BookingModal } from "@/components/modals/booking-modal";
 
-
 export default function MastersPage() {
-  const { data: masters, isLoading ,error} = useQuery<MasterWithUser[]>({
+  const {
+    data: masters,
+    isLoading,
+    error,
+  } = useQuery<MasterWithUser[]>({
     queryKey: ["/api/masters"],
     queryFn: async () => {
       const res = await fetch("/api/masters");
-      if (!res.ok) throw new Error("Не вдалося отримати майстрів");
+      if (!res.ok) throw new Error("Kunne ikke hente mestre");
       return res.json();
     },
   });
@@ -29,9 +32,8 @@ export default function MastersPage() {
   const [selectedMasterId, setSelectedMasterId] = useState<number | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-
   const handleBookingOpen = (id: number | null) => {
-    console.log("handleBookingOpen called with id:", id);
+    console.log("handleBookingOpen kalt med id:", id);
     if (!id) return;
     setBookingMasterId(id);
     setBookingModalOpen(true);
@@ -41,7 +43,6 @@ export default function MastersPage() {
     setBookingModalOpen(false);
     setBookingMasterId(null);
   };
-
 
   const handleOpenModal = (id: number) => {
     setSelectedMasterId(id);
@@ -53,17 +54,17 @@ export default function MastersPage() {
     setSelectedMasterId(null);
   };
 
-  const handleLogin = () => alert("Відкрити модалку входу");
-  const handleRegister = () => alert("Відкрити модалку реєстрації");
+  const handleLogin = () => alert("Åpne innloggingsmodal");
+  const handleRegister = () => alert("Åpne registreringsmodal");
 
   return (
     <>
       <Header onOpenLogin={handleLogin} onOpenRegister={handleRegister} />
       <div className="container py-10 text-center">
-        <Badge variant="secondary" className=" mb-4">
-          Про Masters
+        <Badge variant="secondary" className="mb-4">
+          Om Mestre
         </Badge>
-        <h1 className="text-3xl font-bold mb-6">Наші майстри</h1>
+        <h1 className="text-3xl font-bold mb-6">Våre mestere</h1>
 
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -101,7 +102,7 @@ export default function MastersPage() {
                     onClick={() => handleOpenModal(master.id)}
                     className="mt-4 w-full bg-primary text-white hover:bg-primary/90"
                   >
-                    Переглянути
+                    Se profil
                   </Button>
                 </CardContent>
               </Card>
@@ -124,3 +125,4 @@ export default function MastersPage() {
     </>
   );
 }
+

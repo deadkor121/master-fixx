@@ -26,27 +26,27 @@ export function Header({ onOpenLogin, onOpenRegister }: HeaderProps) {
           <nav className="hidden md:flex items-center space-x-8">
             <Link href="/services">
               <span className="text-gray-700 hover:text-primary font-medium transition-colors">
-                Послуги
+                Tjenester
               </span>
             </Link>
             <Link href="/masters">
               <span className="text-gray-700 hover:text-primary font-medium transition-colors">
-                Майстри
+                Håndverkere
               </span>
             </Link>
             <Link href="/how-it-works">
               <span className="text-gray-700 hover:text-primary font-medium transition-colors">
-                Як це працює
+                Hvordan det fungerer
               </span>
             </Link>
             <Link href="/about">
               <span className="text-gray-700 hover:text-primary font-medium transition-colors">
-                Про нас
+                Om oss
               </span>
             </Link>
             <Link href="/profile">
               <span className="text-gray-700 hover:text-primary font-medium transition-colors">
-                Профіль
+                Profil
               </span>
             </Link>
           </nav>
@@ -57,13 +57,13 @@ export function Header({ onOpenLogin, onOpenRegister }: HeaderProps) {
               onClick={onOpenLogin}
               className="text-gray-700 hover:text-primary font-medium"
             >
-              Увійти
+              Logg inn
             </Button>
             <Button
               onClick={onOpenRegister}
               className="bg-primary text-white hover:bg-primary/90 font-medium"
             >
-              Реєстрація
+              Registrer deg
             </Button>
             <Button
               variant="ghost"
