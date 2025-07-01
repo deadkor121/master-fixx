@@ -12,19 +12,17 @@ app.set("trust proxy", 1);
 const isProd = process.env.NODE_ENV === "production";
 
 // ─── Безпека ─────────────────────────────────────────────────────────────
-app.use(
-  helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-        fontSrc: ["'self'", "https://fonts.gstatic.com"],
-        scriptSrc: ["'self'", "'unsafe-inline'", "https://replit.com"],
-        imgSrc: ["'self'", "data:", "https:"],
-      },
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://replit.com"],
+      imgSrc: ["'self'", "data:", "https:"],
     },
-  })
-);
+  },
+}));
 
 // ─── Rate Limits ─────────────────────────────────────────────────────────
 if (isProd) {
@@ -94,43 +92,7 @@ async function testConnection() {
   }
 }
 
-let server: ReturnType<typeof app.listen> | null = null;
-
-async function gracefulShutdown() {
-  log("Получен сигнал завершения, закрываем сервер...");
-  if (server) {
-    server.close(() => {
-      log("Сервер закрыт. Выход из процесса.");
-      // Если есть подключение к БД, его также надо закрыть, например:
-      // await db.close();
-      process.exit(0);
-    });
-  } else {
-    process.exit(0);
-  }
-}
-
-// Обработка сигналов завершения процесса
-process.on("SIGTERM", () => {
-  log("SIGTERM получен");
-  gracefulShutdown();
-});
-
-process.on("SIGINT", () => {
-  log("SIGINT получен");
-  gracefulShutdown();
-});
-
-// Обработка необработанных исключений и промисов
-process.on("uncaughtException", (err) => {
-  logger.error("Необработанное исключение:", err);
-  process.exit(1);
-});
-
-process.on("unhandledRejection", (reason) => {
-  logger.error("Необработанное отклонение промиса:", reason);
-});
-
+// ─── Головна логіка ──────────────────────────────────────────────────────
 (async () => {
   await testConnection();
 
@@ -142,13 +104,44 @@ process.on("unhandledRejection", (reason) => {
     serveStatic(app); // 🟡 Дуже важливо: до запуску сервера
   }
 
-  server = app.listen(port, "0.0.0.0", () => {
+  const server = app.listen(port, "0.0.0.0", () => {
     log(`🚀 Server started on port ${port}`);
   });
 
   if (!isProd) {
     await setupVite(app, server);
   }
+
+  // Graceful shutdown
+  async function gracefulShutdown() {
+    log("Отримано сигнал завершення, закриваємо сервер...");
+    if (server) {
+      server.close(async () => {
+        log("HTTP сервер закрито");
+        try {
+          if (db && db.$client && typeof db.$client.end === "function") {
+            await db.$client.end();
+            log("Підключення до БД закрито");
+          }
+        } catch (err) {
+          log("Помилка при закритті БД:", err instanceof Error ? err.message : String(err));
+        }
+        log("Вихід із процесу");
+        process.exit(0);
+      });
+
+      // Примусовий вихід через 10 секунд, якщо close "зависне"
+      setTimeout(() => {
+        log("Примусовий вихід через таймаут");
+        process.exit(1);
+      }, 10000);
+    } else {
+      process.exit(0);
+    }
+  }
+
+  process.on("SIGTERM", gracefulShutdown);
+  process.on("SIGINT", gracefulShutdown);
 
   // ── Глобальна обробка помилок ──
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

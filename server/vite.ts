@@ -70,7 +70,7 @@ export async function setupVite(app: Express, server: Server) {
 
 // --- Изменённая функция serveStatic с базовым путем /master-fixx ---
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(import.meta.dirname, "public");
+  const distPath = path.resolve(process.cwd(), "dist", "public");
   const basePath = "/master-fixx";
 
   if (!fs.existsSync(distPath)) {
