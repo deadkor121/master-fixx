@@ -387,6 +387,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   );
 
+// Проверка здоровья сервера (health check)
+app.get("/health", (_req, res) => {
+  res.json({ status: "ok" });
+});
+
 // Отримати всі послуги майстра
 app.get("/api/masters/:id/services", async (req: Request, res: Response) => {
   try {
