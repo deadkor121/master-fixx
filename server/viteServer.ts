@@ -56,9 +56,9 @@ export async function setupVite(app: Express, server: Server) {
   });
 }
 
-export function serveStatic(app: Express) {
+
+export function serveStatic(app: express.Express) {
   const distPath = path.resolve(process.cwd(), "dist/public");
-  const basePath = "/master-fixx";
 
   if (!fs.existsSync(distPath)) {
     throw new Error(
@@ -66,9 +66,11 @@ export function serveStatic(app: Express) {
     );
   }
 
-  app.use(basePath, express.static(distPath));
+  // Отдаём статику с корня
+  app.use(express.static(distPath));
 
-  app.get(`${basePath}/*`, (_req, res) => {
+  // Для SPA: на все маршруты возвращаем index.html
+  app.get("/*", (_req, res) => {
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }
