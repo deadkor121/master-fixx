@@ -15,7 +15,7 @@ export default async () => {
   }
 
   return {
-    base: "/master-fixx/",
+    base: "./",
     plugins,
     resolve: {
       alias: {
