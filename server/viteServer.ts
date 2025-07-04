@@ -3,8 +3,46 @@ import fs from "fs";
 import path from "path";
 import { createServer, type ViteDevServer } from "vite";
 import { type Server } from "http";
-import viteConfig from "../vite.config";
 import { nanoid } from "nanoid";
+import react from "@vitejs/plugin-react";
+import type { PluginOption } from "vite";
+
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
+
+async function createViteConfig() {
+  const plugins: PluginOption[] = [react()];
+
+  // Add Replit plugins if available in development
+  if (process.env.NODE_ENV !== "production" && process.env.REPL_ID !== undefined) {
+    try {
+      const runtimeErrorOverlay = await import("@replit/vite-plugin-runtime-error-modal").then(m => m.default);
+      const cartographer = await import("@replit/vite-plugin-cartographer").then(m => m.cartographer);
+      plugins.push(runtimeErrorOverlay());
+      plugins.push(cartographer());
+    } catch (err: unknown) {
+      console.warn("⚠ Could not load Replit plugins:", err instanceof Error ? err.message : String(err));
+    }
+  }
+
+  const rootDir = path.resolve(__dirname, "..");
+  
+  return {
+    base: "/",
+    plugins,
+    resolve: {
+      alias: {
+        "@": path.resolve(rootDir, "client", "src"),
+        "@shared": path.resolve(rootDir, "shared"),
+        "@assets": path.resolve(rootDir, "attached_assets"),
+      },
+    },
+    root: path.resolve(rootDir, "client"),
+    build: {
+      outDir: path.resolve(rootDir, "dist/public"),
+      emptyOutDir: true,
+    },
+  };
+}
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -19,7 +57,7 @@ export function log(message: string, source = "express") {
 
 export async function setupVite(app: Express, server: Server) {
   const viteServer: ViteDevServer = await createServer({
-    ...(await viteConfig()),
+    ...(await createViteConfig()),
     configFile: false,
     server: {
       middlewareMode: true,
@@ -35,7 +73,7 @@ export async function setupVite(app: Express, server: Server) {
 
     try {
       const clientTemplate = path.resolve(
-        import.meta.dirname,
+        __dirname,
         "..",
         "client",
         "index.html"

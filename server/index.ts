@@ -13,7 +13,7 @@ const isProd = process.env.NODE_ENV === "production";
 
 // ─── Безпека ─────────────────────────────────────────────────────────────
 app.use(helmet({
-  contentSecurityPolicy: {
+  contentSecurityPolicy: isProd ? {
     directives: {
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
@@ -21,7 +21,7 @@ app.use(helmet({
       scriptSrc: ["'self'", "'unsafe-inline'", "https://replit.com"],
       imgSrc: ["'self'", "data:", "https:"],
     },
-  },
+  } : false, // Disable CSP in development for Vite
 }));
 
 // ─── Rate Limits ─────────────────────────────────────────────────────────

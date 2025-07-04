@@ -14,7 +14,7 @@ import ProfilePage from "@/pages/ProfilePage";
 
 function RouterWithBase() {
   return (
-    <Router base="/master-fixx">
+    <Router base="/">
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/services" component={Services} />
