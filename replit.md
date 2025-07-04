@@ -94,15 +94,54 @@ The application uses a relational database with the following core entities:
 - Development vs production environment detection
 
 ### Hosting Strategy
-- Static frontend hosting (GitHub Pages configured)
-- Server-side hosting with Node.js runtime
+- Full-stack hosting on Render (recommended for production)
+- Static frontend served by Express server
 - Database hosted on Neon (serverless PostgreSQL)
+- GitHub Pages configured for alternative static hosting
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
 
+## Deployment Guide
+
+### Ready for Render Deployment
+
+The Master-House platform is configured for deployment on Render with the following specifications:
+
+**Build Configuration:**
+- Build Command: `npm install && npm run build`
+- Start Command: `npm start`
+- Node.js Version: 20.x
+- Root Directory: Leave empty (project in repository root)
+
+**Required Environment Variables:**
+- `DATABASE_URL` - PostgreSQL connection string (already configured for Neon)
+- `NODE_ENV=production`
+- `JWT_SECRET` - Secret key for JWT token signing
+- `PGHOST`, `PGPORT`, `PGUSER`, `PGPASSWORD`, `PGDATABASE` - Database connection details
+
+**Build Process:**
+1. Frontend builds to `dist/public/` via Vite
+2. Backend compiles to `dist/server/index.js` via esbuild
+3. Server serves static frontend files in production mode
+
+**Production Optimizations:**
+- CSP enabled for security in production
+- Rate limiting configured
+- Helmet security headers active
+- Static file serving optimized
+
+### Deployment Checklist:
+- [x] Package.json configured with correct build/start scripts
+- [x] Database schema ready (Drizzle ORM)
+- [x] Environment variables documented
+- [x] Production/development mode detection
+- [x] Static file serving configured
+- [x] Security headers and CSP configured
+- [x] CORS and rate limiting ready
+
 ## Changelog
 
 Changelog:
-- July 04, 2025. Initial setup
+- July 04, 2025. Initial setup and Render deployment preparation
