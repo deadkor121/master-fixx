@@ -12,17 +12,21 @@ app.set("trust proxy", 1);
 const isProd = process.env.NODE_ENV === "production";
 
 // ─── Безпека ─────────────────────────────────────────────────────────────
-app.use(helmet({
-  contentSecurityPolicy: isProd ? {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-      fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "https://replit.com"],
-      imgSrc: ["'self'", "data:", "https:"],
-    },
-  } : false, // Disable CSP in development for Vite
-}));
+app.use(
+  helmet({
+    contentSecurityPolicy: isProd
+      ? {
+          directives: {
+            defaultSrc: ["'self'"],
+            styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+            fontSrc: ["'self'", "https://fonts.gstatic.com"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "https://replit.com"],
+            imgSrc: ["'self'", "data:", "https:"],
+          },
+        }
+      : false, // Disable CSP in development for Vite
+  })
+);
 
 // ─── Rate Limits ─────────────────────────────────────────────────────────
 if (isProd) {
@@ -37,7 +41,7 @@ if (isProd) {
     message: { message: "Забагато спроб входу, спробуйте пізніше" },
   });
 
-  app.use(limiter);
+  app.use("/api/", limiter);
   app.use("/api/auth", authLimiter);
 }
 
@@ -53,7 +57,9 @@ const logger = winston.createLogger({
     winston.format.errors({ stack: true }),
     winston.format.json()
   ),
-  transports: [new winston.transports.Console({ format: winston.format.simple() })],
+  transports: [
+    new winston.transports.Console({ format: winston.format.simple() }),
+  ],
 });
 
 // ─── Logging middleware ──────────────────────────────────────────────────
@@ -72,13 +78,20 @@ app.use((req, res, next) => {
     const duration = Date.now() - start;
     if (path.startsWith("/api")) {
       let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
+      if (capturedJsonResponse)
+        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
       if (logLine.length > 80) logLine = logLine.slice(0, 79) + "…";
       log(logLine);
     }
   });
 
   next();
+});
+
+// ─── Health-check endpoint для Render/Railway ───────────────────────────
+
+app.get("/health", (_req, res) => {
+  res.json({ status: "ok" });
 });
 
 // ─── Перевірка бази даних ────────────────────────────────────────────────
@@ -91,12 +104,6 @@ async function testConnection() {
     process.exit(1);
   }
 }
-
-
-// Health check для Railway и других платформ
-app.get("/health", (_req, res) => {
-  res.json({ status: "ok" });
-});
 
 // ─── Головна логіка ──────────────────────────────────────────────────────
 (async () => {
@@ -130,13 +137,15 @@ app.get("/health", (_req, res) => {
             log("Підключення до БД закрито");
           }
         } catch (err) {
-          log("Помилка при закритті БД:", err instanceof Error ? err.message : String(err));
+          log(
+            "Помилка при закритті БД:",
+            err instanceof Error ? err.message : String(err)
+          );
         }
         log("Вихід із процесу");
         process.exit(0);
       });
 
-      // Примусовий вихід через 10 секунд, якщо close "зависне"
       setTimeout(() => {
         log("Примусовий вихід через таймаут");
         process.exit(1);

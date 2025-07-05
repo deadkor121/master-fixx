@@ -105,10 +105,18 @@ export function serveStatic(app: express.Express) {
   }
 
   // Отдаём статику с корня
-  app.use(express.static(distPath));
+  app.use(
+    express.static(distPath, {
+      maxAge: "7d", // кеш на 7 днів
+      immutable: true, // якщо є hash у файлі — можна кешувати назавжди
+    })
+  );
 
   // Для SPA: на все маршруты возвращаем index.html
-  app.get("/*", (_req, res) => {
+  app.get("*", (req, res, next) => {
+    if (req.path.startsWith("/api") || req.path.startsWith("/health")) {
+      return next();
+    }
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }

@@ -4,7 +4,7 @@ import { storage } from "./storage";
 import { z } from "zod";
 import { hashPassword, comparePassword, validateId } from "./utils/auth";
 import { generateToken, verifyToken, type AuthRequest } from "./middleware/auth";
-
+import { cache } from "./middleware/cache";
 // --- Схеми валідації Zod ---
 
 const insertUserSchema = z.object({
@@ -138,7 +138,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Отримати всі категорії
-  app.get("/api/categories", async (req: Request, res: Response) => {
+  app.get("/api/categories", cache(300), async (req: Request, res: Response) => {
     try {
       const categories = await storage.getAllServiceCategories();
       res.json(categories);
@@ -148,7 +148,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Отримати категорію по ID
-  app.get("/api/categories/:id", async (req: Request, res: Response, next: NextFunction) => {
+  app.get("/api/categories/:id", cache(300), async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = validateId(req.params.id);
       if (!id) {
@@ -187,7 +187,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Майстер по ID
-  app.get("/api/masters/:id", async (req: Request, res: Response, next: NextFunction) => {
+  app.get("/api/masters/:id" , cache(300), async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = validateId(req.params.id);
       if (!id) {
@@ -205,7 +205,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Відгуки майстра
-  app.get("/api/masters/:id/reviews", async (req: Request, res: Response) => {
+  app.get("/api/masters/:id/reviews", cache(300), async (req: Request, res: Response) => {
     try {
       const masterId = parseInt(req.params.id, 10);
       if (isNaN(masterId)) {
