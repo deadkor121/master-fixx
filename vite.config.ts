@@ -1,17 +1,10 @@
+import type { UserConfig, PluginOption } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
-import type { PluginOption } from "vite";
 
-export default async (): Promise<{ 
-  base: string;
-  plugins: PluginOption[];
-  resolve: { alias: Record<string, string> };
-  root: string;
-  build: { outDir: string; emptyOutDir: boolean };
-}> => {
+export default async (): Promise<UserConfig> => {
   const plugins: PluginOption[] = [react()];
 
-  // Динамічно додаємо Replit-плагіни, якщо доступні
   if (process.env.NODE_ENV !== "production" && process.env.REPL_ID !== undefined) {
     try {
       const runtimeErrorOverlay = await import("@replit/vite-plugin-runtime-error-modal").then(m => m.default);
@@ -37,6 +30,17 @@ export default async (): Promise<{
     build: {
       outDir: path.resolve(__dirname, "dist/public"),
       emptyOutDir: true,
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes("node_modules")) {
+              if (id.includes("react")) return "vendor-react";
+              if (id.includes("zod")) return "vendor-zod";
+              return "vendor";
+            }
+          },
+        },
+      },
     },
   };
 };
