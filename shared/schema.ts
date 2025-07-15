@@ -74,6 +74,7 @@ export const bookings = pgTable("bookings", {
 export const reviews = pgTable("reviews", {
   id: serial("id").primaryKey(),
   masterId: integer("master_id").notNull(),
+
   clientId: integer("client_id").notNull(),
   bookingId: integer("booking_id").notNull(),
   rating: integer("rating").notNull(),
@@ -82,7 +83,26 @@ export const reviews = pgTable("reviews", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const messages = pgTable("messages", {
+  id: serial("id").primaryKey(),
+  bookingId: integer("booking_id").notNull(),
+  senderId: integer("sender_id").notNull(),
+    receiverId: integer("receiver_id").notNull().default(0),
+  text: text("text").notNull(),
+  sentAt: timestamp("sent_at", { withTimezone: true }).notNull(),
+});
+
+
+export const insertMessageSchema = z.object({
+  bookingId: z.number(),
+  receiverId: z.number(),
+  text: z.string().min(1),
+   sentAt: z.string().optional(), 
+});
+
+
 // Insert schemas
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -94,7 +114,9 @@ export const insertMasterSchema = createInsertSchema(masters).omit({
   reviewCount: true,
   completedJobs: true,
   repeatClients: true,
-}as const);
+} as const);
+
+
 
 export const insertServiceCategorySchema = createInsertSchema(serviceCategories).omit({
   id: true,
@@ -134,6 +156,9 @@ export type InsertBooking = z.infer<typeof insertBookingSchema>;
 export type Review = typeof reviews.$inferSelect;
 export type InsertReview = z.infer<typeof insertReviewSchema>;
 
+export type Message = typeof messages.$inferSelect;
+export type InsertMessage = Omit<Message, "id">;
+
 // Extended types for frontend
 export type PublicUser = Omit<User, "password">;
 export type MasterWithUser = Master & {
@@ -155,4 +180,14 @@ export type ReviewWithDetails = Review & {
   name?: string;
   text?: string;
   date?: string;
+};
+
+export type ChatMessage = {
+  id: number;
+  bookingId: number;
+  senderId: number;
+  receiverId: number; 
+  text: string;
+  sentAt: string; // всегда строка ISO
+  senderName?: string; // новое поле
 };

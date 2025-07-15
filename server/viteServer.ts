@@ -103,20 +103,21 @@ export function serveStatic(app: express.Express) {
       `Could not find the build directory: ${distPath}, make sure to build the client first`
     );
   }
+// Статика
+app.use(
+  express.static(distPath, {
+    maxAge: "7d",
+    immutable: true,
+  })
+);
 
-  // Отдаём статику с корня
-  app.use(
-    express.static(distPath, {
-      maxAge: "7d", // кеш на 7 днів
-      immutable: true, // якщо є hash у файлі — можна кешувати назавжди
-    })
-  );
+// SPA fallback — только если не найдено ничего ранее
+app.get("*", (req, res, next) => {
+  const filePath = path.join(distPath, req.path);
+  if (fs.existsSync(filePath)) {
+    return res.sendFile(filePath);
+  }
 
-  // Для SPA: на все маршруты возвращаем index.html
-  app.get("*", (req, res, next) => {
-    if (req.path.startsWith("/api") || req.path.startsWith("/health")) {
-      return next();
-    }
-    res.sendFile(path.resolve(distPath, "index.html"));
-  });
+  res.sendFile(path.join(distPath, "index.html"));
+});
 }

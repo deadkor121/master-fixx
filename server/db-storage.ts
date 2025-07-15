@@ -10,6 +10,18 @@ import {
   type Review, type InsertReview, type ReviewWithDetails
 } from "@shared/schema";
 import type { IStorage } from "./storage";
+import { messages, type Message } from "@shared/schema";
+
+export type ChatMessage = {
+  id: number;
+  bookingId: number;
+  senderId: number;
+  receiverId: number;
+  text: string;
+  sentAt: string; // всегда строка ISO
+};
+
+export type InsertChatMessage = Omit<ChatMessage, "id">;
 
 export class DatabaseStorage implements IStorage {
   // Users
@@ -106,7 +118,6 @@ export class DatabaseStorage implements IStorage {
           userType: users.userType,
           category: users.category,
           createdAt: users.createdAt,
-          // Додай ці:
           about: users.about,
           birthDate: users.birthDate,
           middleName: users.middleName,
@@ -317,5 +328,54 @@ export class DatabaseStorage implements IStorage {
     await this.updateMasterRating(review.masterId, avgRating, masterReviews.length);
 
     return result[0];
+  }
+
+  // Messages
+  async getMessagesByBooking(bookingId: number): Promise<ChatMessage[]> {
+    // Делаем join с users, чтобы получить имя отправителя
+   const result = await db
+  .select({
+    id: messages.id,
+    bookingId: messages.bookingId,
+    senderId: messages.senderId,
+    receiverId: messages.receiverId, // ← ДОДАЙ ЦЕ
+    text: messages.text,
+    sentAt: messages.sentAt,
+    senderName: users.firstName,
+  })
+  .from(messages)
+  .leftJoin(users, eq(messages.senderId, users.id))
+  .where(eq(messages.bookingId, bookingId));
+
+    return result.map(msg => ({
+      ...msg,
+      sentAt: msg.sentAt instanceof Date ? msg.sentAt.toISOString() : String(msg.sentAt),
+      senderName: msg.senderName,
+    }));
+  }
+
+  async createMessage(message: InsertChatMessage): Promise<ChatMessage> {
+    const result = await db.insert(messages)
+      .values({
+        ...message,
+        sentAt: message.sentAt ? new Date(message.sentAt) : new Date(),
+      })
+      .returning();
+    const msg = result[0];
+    return {
+      ...msg,
+      sentAt: msg.sentAt instanceof Date ? msg.sentAt.toISOString() : String(msg.sentAt),
+    };
+  }
+
+  async getMessageById(id: number): Promise<ChatMessage | undefined> {
+    const result = await db.select().from(messages).where(eq(messages.id, id));
+    if (!result[0]) return undefined;
+    const msg = result[0];
+    return { ...msg, sentAt: msg.sentAt instanceof Date ? msg.sentAt.toISOString() : msg.sentAt };
+  }
+
+  async deleteMessage(id: number): Promise<void> {
+    await db.delete(messages).where(eq(messages.id, id));
   }
 }

@@ -20,7 +20,6 @@ const insertUserSchema = z.object({
 const insertReviewSchema = z.object({
   masterId: z.number().int().positive(),
   rating: z.number().min(1).max(5),
-  // тепер comment по замовчуванню пустий рядок, якщо не переданий
   comment: z.string().optional().default(""),
   clientId: z.number().int().positive(),
   bookingId: z.number().int().positive(),
@@ -60,6 +59,14 @@ const insertServiceSchema = z.object({
   description: z.string().min(1, "Опис обов'язковий"),
   price: z.string().min(1, "Ціна обов'язкова"),
   categoryId: z.number().int().positive(),
+});
+
+// Схема для сообщения
+const insertMessageSchema = z.object({
+  bookingId: z.number().int().positive(),
+    receiverId: z.number().int().positive(),
+  text: z.string().min(1, "Сообщение не может быть пустым"),
+  sentAt: z.string().optional(), 
 });
 
 // Тип для оновлення профілю через з.infer
@@ -453,8 +460,63 @@ app.delete("/api/services/:id", async (req: Request, res: Response) => {
   }
 });
 
+// Получить историю чата по заказу
+app.get("/api/messages/:bookingId", verifyToken, async (req: AuthRequest, res: Response) => {
+  try {
+    const bookingId = parseInt(req.params.bookingId, 10);
+    if (isNaN(bookingId)) {
+      return res.status(400).json({ message: "Неверный ID заказа" });
+    }
+    const messages = await storage.getMessagesByBooking(bookingId);
+    res.json(messages);
+  } catch (error) {
+    res.status(500).json({ message: "Ошибка загрузки сообщений" });
+  }
+});
 
+// Отправить сообщение в чат
+app.post("/api/messages", verifyToken, async (req: AuthRequest, res: Response) => {
+  try {
+    // Парсим тело с валидацией
+    const data = insertMessageSchema.parse(req.body);
+    
+    // Формируем объект для вставки, обязательно указывая receiverId из data
+    const message = await storage.createMessage({
+      bookingId: data.bookingId,
+      receiverId: data.receiverId,    // <--- ОБЯЗАТЕЛЬНО
+      text: data.text,
+      senderId: req.user!.id,
+      sentAt: new Date().toISOString(),
+    });
 
+    res.json(message);
+  } catch (error) {
+    res.status(400).json({ message: "Ошибка отправки сообщения" });
+  }
+});
+// Видалити повідомлення
+app.delete("/api/messages/:id", verifyToken, async (req: AuthRequest, res: Response) => {
+  try {
+    const messageId = parseInt(req.params.id, 10);
+    if (isNaN(messageId)) {
+      return res.status(400).json({ message: "Неверный ID сообщения" });
+    }
+    // Проверяем, что сообщение принадлежит пользователю
+    const messages = await storage.getMessagesByBooking(-1); // реализуйте метод getMessageById
+    const message = await storage.getMessageById(messageId);
+    if (!message) {
+      return res.status(404).json({ message: "Сообщение не найдено" });
+    }
+    if (message.senderId !== req.user!.id) {
+      return res.status(403).json({ message: "Нет прав на удаление" });
+    }
+    await storage.deleteMessage(messageId);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ message: "Ошибка удаления сообщения" });
+  }
+});
+  
   // Глобальний обробник помилок
   app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     console.error("Error:", err);

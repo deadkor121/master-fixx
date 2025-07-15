@@ -106,7 +106,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/become-master">
+                <Link href="/profile">
                   <span className="hover:text-white transition-colors">
                     Bli håndverker
                   </span>
@@ -134,11 +134,11 @@ export function Footer() {
             <ul className="space-y-3 text-gray-400">
               <li className="flex items-center">
                 <Phone className="h-4 w-4 mr-3" />
-                <span>+47 67 123 45 67</span>
+                <span>+47 93 98 94 94</span>
               </li>
               <li className="flex items-center">
                 <Mail className="h-4 w-4 mr-3" />
-                <span>info@master-house.no</span>
+                <span>kolyn607@gmail.com</span>
               </li>
               <li className="flex items-start">
                 <MapPin className="h-4 w-4 mr-3 mt-1" />

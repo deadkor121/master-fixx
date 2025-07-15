@@ -6,7 +6,7 @@ import winston from "winston";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./viteServer";
 import { db } from "./db";
-
+import { setupWebSocket } from "./ws";
 const app = express();
 app.set("trust proxy", 1);
 const isProd = process.env.NODE_ENV === "production";
@@ -124,7 +124,7 @@ async function testConnection() {
   if (!isProd) {
     await setupVite(app, server);
   }
-
+setupWebSocket(server);
   // Graceful shutdown
   async function gracefulShutdown() {
     log("Отримано сигнал завершення, закриваємо сервер...");

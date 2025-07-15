@@ -5,11 +5,11 @@ import {
   type ServiceCategory, type InsertServiceCategory,
   type Service, type InsertService,
   type Booking, type InsertBooking, type BookingWithDetails,
-  type Review, type InsertReview, type ReviewWithDetails
+  type Review, type InsertReview, type ReviewWithDetails,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
-
+import type { ChatMessage, InsertChatMessage } from "./db-storage";
 export interface IStorage {
   // Users
   getUser(id: number): Promise<User | undefined>;
@@ -61,6 +61,10 @@ export interface IStorage {
   // Reviews
   getReviewsByMaster(masterId: number): Promise<ReviewWithDetails[]>;
   createReview(review: InsertReview): Promise<Review>;
+
+  // Messages
+  getMessagesByBooking(bookingId: number): Promise<ChatMessage[]>;
+  createMessage(message: InsertChatMessage): Promise<ChatMessage>;
 }
 
 export class MemStorage implements IStorage {
@@ -70,12 +74,14 @@ export class MemStorage implements IStorage {
   private services: Map<number, Service>;
   private bookings: Map<number, Booking>;
   private reviews: Map<number, Review>;
+  private messages: Map<number, ChatMessage>;
   private currentUserId: number;
   private currentMasterId: number;
   private currentCategoryId: number;
   private currentServiceId: number;
   private currentBookingId: number;
   private currentReviewId: number;
+  private currentMessageId: number;
 
   constructor() {
     this.users = new Map();
@@ -84,12 +90,14 @@ export class MemStorage implements IStorage {
     this.services = new Map();
     this.bookings = new Map();
     this.reviews = new Map();
+    this.messages = new Map();
     this.currentUserId = 1;
     this.currentMasterId = 1;
     this.currentCategoryId = 1;
     this.currentServiceId = 1;
     this.currentBookingId = 1;
     this.currentReviewId = 1;
+    this.currentMessageId = 1;
     
     this.initializeData();
   }
@@ -98,49 +106,48 @@ export class MemStorage implements IStorage {
     // Initialize service categories
     const categories: InsertServiceCategory[] = [
       {
-        name: "Сантехніка",
-        description: "Усунення протікань, встановлення труб, ремонт",
+        name: "Rørleggerarbeid",
+        description: "Fikse lekkasjer, installere rør, reparasjoner",
         icon: "fas fa-wrench",
         color: "blue",
         basePrice: "300",
       },
       {
-        name: "Електрика",
-        description: "Проводка, розетки, освітлення, електромонтаж",
+        name: "Elektrisk arbeid",
+        description: "Ledninger, stikkontakter, belysning, elektroinstallasjon",
         icon: "fas fa-bolt",
         color: "yellow",
         basePrice: "400",
       },
       {
-        name: "Прибирання",
-        description: "Генеральне прибирання, після ремонту, регулярне",
+        name: "Rengjøring",
+        description: "Hovedrengjøring, etter oppussing, regelmessig rengjøring",
         icon: "fas fa-broom",
         color: "green",
         basePrice: "200",
       },
       {
-        name: "Ремонт",
-        description: "Оздоблювальні роботи, фарбування, плитка",
+        name: "Oppussing",
+        description: "Etterbehandling, maling, flislegging",
         icon: "fas fa-paint-roller",
         color: "purple",
         basePrice: "500",
       },
       {
-        name: "Побутова техніка",
-        description: "Ремонт пральних машин, холодильників, плит",
+        name: "Hvitevarer",
+        description: "Reparasjon av vaskemaskiner, kjøleskap, komfyrer",
         icon: "fas fa-cog",
         color: "red",
         basePrice: "350",
       },
       {
-        name: "Меблі",
-        description: "Збирання, ремонт, перетяжка меблів",
+        name: "Møbler",
+        description: "Montering, reparasjon, møbeltrekking",
         icon: "fas fa-couch",
         color: "indigo",
         basePrice: "250",
       },
     ];
-
     categories.forEach(cat => this.createServiceCategory(cat));
 
     // Initialize sample masters
@@ -499,6 +506,22 @@ async deleteService(serviceId: number) {
     await this.updateMasterRating(insertReview.masterId, avgRating, masterReviews.length);
 
     return review;
+  }
+
+  // Messages
+  async getMessagesByBooking(bookingId: number): Promise<ChatMessage[]> {
+    return Array.from(this.messages.values()).filter(msg => msg.bookingId === bookingId);
+  }
+
+  async createMessage(message: InsertChatMessage): Promise<ChatMessage> {
+    const id = this.currentMessageId++;
+    const chatMessage: ChatMessage = {
+      ...message,
+      id,
+      sentAt: message.sentAt || new Date().toISOString(),
+    };
+    this.messages.set(id, chatMessage);
+    return chatMessage;
   }
 }
 

@@ -259,5 +259,32 @@
         "description": "På alt arbeid"
       }
     }
+  },
+  "bookingModal": {
+    "title": "Bestill tjeneste",
+    "subtitle": "Fyll ut skjemaet for å kontakte mesteren",
+    "loading": "Laster...",
+    "name": "Ditt navn",
+    "namePlaceholder": "Hva skal vi kalle deg?",
+    "phone": "Telefon",
+    "phonePlaceholder": "+47 123 45 678",
+    "address": "Adresse",
+    "addressPlaceholder": "Hvor skal mesteren komme?",
+    "date": "Dato",
+    "time": "Tid",
+    "timePlaceholder": "Velg tid",
+    "description": "Beskrivelse av problemet",
+    "descriptionPlaceholder": "Beskriv detaljert hva som må gjøres...",
+    "approxPrice": "Omtrentlig pris",
+    "from": "fra",
+    "currency": "kr",
+    "exactPrice": "Den nøyaktige prisen vil mesteren bekrefte",
+    "send": "Send forespørsel",
+    "sending": "Sender...",
+    "successTitle": "Forespørsel sendt!",
+    "successDesc": "Mesteren vil kontakte deg så snart som mulig.",
+    "errorTitle": "Feil",
+    "errorDesc": "Kunne ikke sende forespørselen. Vennligst prøv igjen.",
+    "hint": "Mesteren kontakter deg innen 15 minutter for å bekrefte detaljene"
   }
 }

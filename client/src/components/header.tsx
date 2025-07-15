@@ -23,7 +23,7 @@ export function Header({ onOpenLogin, onOpenRegister }: HeaderProps) {
             </Link>
           </div>
 
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="flex items-center space-x-6">
             <Link href="/services">
               <span className="text-gray-700 hover:text-primary font-medium transition-colors">
                 Tjenester
@@ -47,6 +47,11 @@ export function Header({ onOpenLogin, onOpenRegister }: HeaderProps) {
             <Link href="/profile">
               <span className="text-gray-700 hover:text-primary font-medium transition-colors">
                 Profil
+              </span>
+            </Link>
+            <Link href="/dashboard">
+              <span className="text-gray-700 hover:text-primary font-medium transition-colors">
+                Mine bestillinger
               </span>
             </Link>
           </nav>
